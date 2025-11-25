@@ -1,8 +1,19 @@
-export function ResultContainer() {
+interface ResultContainerInputs {
+  peakFlowEquationName: string;
+  heightOfWater: number;
+  volumeOfWater: number;
+}
+
+export function ResultContainer({
+  peakFlowEquationName,
+  heightOfWater,
+  volumeOfWater,
+}: ResultContainerInputs) {
+  
   return (
     <div className="result-container">
       <p>
-        The estimated peak flow is{" "}
+        The estimated peak flow is {heightOfWater}
         <b>
           <span id="q-pred-result" />
         </b>{" "}

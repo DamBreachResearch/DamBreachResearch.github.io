@@ -18,7 +18,7 @@ interface EqnList {
 }
 
 const EquationList: EqnList = {
-  "Fr95-Q": {
+  "Froehlich (1995a)-Q": {
     name: "Froehlich (1995a)",
     description:
       "An early equation that introduced multi-linear regression to this problem, \
@@ -31,7 +31,7 @@ overestimating the peak flow.",
     func: (dam: DamFailure) => 0.607 * dam.v_w ** 0.295 * dam.h_w ** 1.24,
     reFunc: (dam: DamFailure) => 0.04 * dam.v_w ** 0.46 * dam.h_w ** 1.11,
   },
-  "We96-Q": {
+  "Webby (1996)-Q": {
     name: "Webby (1996)",
     description:
       "A simple, dimensionally homogenous equation that uses only height and \
@@ -46,7 +46,7 @@ equation became the basis for subsequent models.",
     reFunc: (dam: DamFailure) =>
       0.015 * 9.81 ** 0.5 * dam.v_w ** 0.46 * dam.h_w ** 1.11,
   },
-  "Xu09-Q": {
+  "Xu and Zhang (2009)-Q": {
     name: "Xu and Zhang (2009)",
     description:
       "A dimensionally homogenous equation that includes discrete variables \
@@ -75,7 +75,7 @@ accurately predicting the peak flow.",
       );
     },
   },
-  "Ho14-Q": {
+  "Hooshyaripor et al. (2014)-Q": {
     name: "Hooshyaripor et al. (2014)",
     description:
       "A simple, dimensionally homogenous equation that uses only height and \
@@ -90,7 +90,7 @@ found that the effect of the copula on the model performance is negligible.",
     reFunc: (dam: DamFailure) =>
       0.016 * 9.81 ** 0.5 * dam.v_w ** 0.45 * dam.h_w ** 1.14,
   },
-  "Az15-Q": {
+  "Azimi et al. (2015)-Q": {
     name: "Azimi et al. (2015)",
     description:
       "A simple, dimensionally homogenous equation that uses only height and \
@@ -107,7 +107,7 @@ still produce large errors.",
     reFunc: (dam: DamFailure) =>
       0.015 * 9.81 ** 0.5 * dam.v_w ** 0.46 * dam.h_w ** 1.11,
   },
-  "Fr16-Q": {
+  "Froehlich (2016)-Q": {
     name: "Froehlich (2016)",
     description:
       "A more complicated equation that accounts for the mode of failure, as \
@@ -145,7 +145,7 @@ improved the model performance compared to simpler models.",
       );
     },
   },
-  "Zh20-Q": {
+  "Zhong et al. (2020)-Q": {
     name: "Zhong et al. (2020)",
     description:
       "This equation separates homogenous-fill and core-wall dams in its \
@@ -186,7 +186,7 @@ compared to simpler models (Yassin et al., 2025).",
       );
     },
   },
-  "Ya25-Q": {
+  "Yassin et al. (2025)-Q": {
     name: "Yassin et al. (2025)",
     description:
       "This equation is a simple equation that uses height and volume of water, but \
@@ -209,7 +209,7 @@ accurate of the models, but it is still prone to large errors in some cases.",
 
   // TIME TO FAILURE FUNCTIONS
 
-  "Fr95-T": {
+  "Froehlich (1995b)-T": {
     name: "Froehlich (1995b)",
     description: `Placeholder for Froehlich (1995) equation for time to failure.`,
     mean: -0.0997,
@@ -220,7 +220,7 @@ accurate of the models, but it is still prone to large errors in some cases.",
       3.84 * (dam.v_w / 10 ** 6) ** 0.53 * dam.h_b ** -0.9,
     reFunc: (dam: DamFailure) => 0.026 * dam.v_w ** 0.37 * dam.h_b ** -0.78,
   },
-  "Fr08-T": {
+  "Froehlich (2008)-T": {
     name: "Froehlich (2008)",
     description: `Placeholder for Froehlich (2008) equation for time to failure.`,
     mean: -0.0684,
@@ -232,7 +232,7 @@ accurate of the models, but it is still prone to large errors in some cases.",
     reFunc: (dam: DamFailure) =>
       0.045 * 9.81 ** -0.5 * dam.v_w ** 0.39 * dam.h_b ** -0.68,
   },
-  "Xu09-T": {
+  "Xu and Zhang (2009)-T": {
     name: "Xu and Zhang (2009)",
     description: `Placeholder for Xu and Zhang (2009) equation for time to failure.`,
     mean: 0.1456,
@@ -252,7 +252,7 @@ accurate of the models, but it is still prone to large errors in some cases.",
       return 0.043 * k_e * dam.h_d ** 0.35 * dam.v_w ** 0.29 * dam.h_w ** -0.86;
     },
   },
-  "Zh20-T": {
+  "Zhong et al. (2020)-T": {
     name: "Zhong et al. (2020)",
     description: `Placeholder for Zhong et al. (2020) equation for time to failure.`,
     mean: 0.1088,

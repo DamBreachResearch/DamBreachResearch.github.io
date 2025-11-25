@@ -1,4 +1,4 @@
-import { EquationList, EqnListItem } from "./eqnList.js";
+import { EquationList, type EqnListItem } from "./eqnList";
 
 export interface DamFailure {
   v_w: number;
@@ -69,22 +69,22 @@ class EmpiricalEquation {
 
 export class PeakFlowEquation extends EmpiricalEquation {
   units: string = "m³/s";
-  constructor(shortName: string) {
-    super(shortName + "-Q");
+  constructor(name: string) {
+    super(name + "-Q");
   }
 }
 
 export class TimeToFailureEquation extends EmpiricalEquation {
   units: string = "h";
-  constructor(shortName: string) {
-    super(shortName + "-T");
+  constructor(name: string) {
+    super(name + "-T");
   }
 }
 
 export class BreachWidthEquation extends EmpiricalEquation {
   units: string = "m";
-  constructor(shortName: string) {
-    super(shortName + "-B");
+  constructor(name: string) {
+    super(name + "-B");
   }
 }
 

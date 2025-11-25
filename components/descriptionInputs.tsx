@@ -5,14 +5,12 @@ function SelectionInput({
   options,
   value,
   onValueChange,
-  defaultValue = undefined,
   suppressName = undefined,
 }: {
   name: string;
   options: string[];
   value: string;
   onValueChange: Dispatch<SetStateAction<string>>;
-  defaultValue?: string;
   suppressName?: boolean;
 }) {
   let optionsJSX = [];
@@ -36,7 +34,6 @@ function SelectionInput({
           maxSize * 12 +
           " text-center bg-slate-700 hover:bg-slate-600 rounded-xl pl-2 text-2xl"
         }
-        defaultValue={defaultValue}
         value={value}
         onChange={(e) => onValueChange(e.target.value)}
       >
@@ -52,30 +49,63 @@ function SelectionInput({
 interface DamDescriptionProperties {
   peakFlowEquationName: string;
   onPeakFlowEquationChange: Dispatch<SetStateAction<string>>;
+  timeToFailureEquationName: string;
+  onTimeToFailureEquationChange: Dispatch<SetStateAction<string>>;
+  failureMode: string;
+  onFailureModeChange: Dispatch<SetStateAction<string>>;
+  erodibility: string;
+  onErodibilityChange: Dispatch<SetStateAction<string>>;
+  damType: string;
+  onDamTypeChange: Dispatch<SetStateAction<string>>;
+  originalOrRecalibrated: string;
+  onRecalibratedChange: Dispatch<SetStateAction<string>>;
 }
 
 export function DamDescriptionContainer({
   peakFlowEquationName,
-  onPeakFlowEquationChange
+  onPeakFlowEquationChange,
+  timeToFailureEquationName,
+  onTimeToFailureEquationChange,
+  failureMode,
+  onFailureModeChange,
+  erodibility,
+  onErodibilityChange,
+  damType,
+  onDamTypeChange,
+  originalOrRecalibrated,
+  onRecalibratedChange,
 }: DamDescriptionProperties) {
   return (
     <div className="dam-description pb-4 text-center">
-      {/*      <span className="text-2xl">For the </span>
-      <SelectionInput name="failure" options={["overtopping", "piping"]} />
+      <span className="text-2xl">For the </span>
+      <SelectionInput
+        name="failure"
+        options={["overtopping", "piping"]}
+        value={failureMode}
+        onValueChange={onFailureModeChange}
+      />
       <span className="text-2xl"> of a </span>
       <SelectionInput
         name="erodibility"
         options={["low", "medium", "high"]}
-        defaultValue="medium"
+        value={erodibility}
+        onValueChange={onErodibilityChange}
       />
       <span className="text-2xl"> </span>
-      <SelectionInput name="dam" options={["homogenous-fill", "core-wall"]} />
+      <SelectionInput
+        name="dam"
+        options={["homogenous-fill", "core-wall"]}
+        value={damType}
+        onValueChange={onDamTypeChange}
+      />
       <span className="text-2xl">, calculate the peak flow using the </span>
       <SelectionInput
         name="recalibrated"
         suppressName={true}
         options={["original", "recalibrated"]}
-      /> */}
+        value={originalOrRecalibrated}
+        onValueChange={onRecalibratedChange}
+      />
       <SelectionInput
         name="peak flow equation"
         options={[
@@ -91,7 +121,7 @@ export function DamDescriptionContainer({
         value={peakFlowEquationName}
         onValueChange={onPeakFlowEquationChange}
       />
-      {/*       <span className="text-2xl"> and the time to failure using the </span>
+             <span className="text-2xl"> and the time to failure using the </span>
       <SelectionInput
         name="time to failure equation"
         options={[
@@ -100,8 +130,10 @@ export function DamDescriptionContainer({
           "Xu and Zhang (2009)",
           "Zhong et al. (2020)",
         ]}
+        value={timeToFailureEquationName}
+        onValueChange={onTimeToFailureEquationChange}
       />
-      <span className="text-2xl">:</span> */}
+      <span className="text-2xl">:</span>
     </div>
   );
 }

@@ -7,15 +7,14 @@ interface NumericalInputProps {
   defaultValue?: number;
   reasonableMaximum?: number;
   required: boolean;
-  value?: number;
-  onValueChange: Dispatch<SetStateAction<number>>;
+  value?: string;
+  onValueChange: Dispatch<SetStateAction<string>>;
 }
 
 function NumericalInput({
   variableName,
   description,
   units,
-  defaultValue = undefined,
   reasonableMaximum = undefined,
   value = undefined,
   onValueChange,
@@ -52,10 +51,9 @@ function NumericalInput({
             "invalid:border-b-2 invalid:border-orange-500 invalid:text-orange-600 " +
             "hover:bg-slate-600"
           }
-          type="number"
+          type="text"
           id={variableName}
           name={variableName}
-          defaultValue={defaultValue}
           value={value}
           onChange={(e) => onValueChange(e.target.value)}
           min={0}
@@ -76,23 +74,35 @@ function NumericalInput({
 }
 
 interface NumericalInputContainerProps {
-  heightOfWater: number;
-  volumeOfWater: number;
-  onHeightOfWaterChange: Dispatch<SetStateAction<number>>;
-  onVolumeOfWaterChange: Dispatch<SetStateAction<number>>;
+  heightOfWater: string;
+  volumeOfWater: string;
+  depthOfBreach: string;
+  heightOfDam: string;
+  averageWidth: string;
+  onHeightOfWaterChange: Dispatch<SetStateAction<string>>;
+  onVolumeOfWaterChange: Dispatch<SetStateAction<string>>;
+  onDepthOfBreachChange: Dispatch<SetStateAction<string>>;
+  onHeightOfDamChange: Dispatch<SetStateAction<string>>;
+  onAverageWidthChange: Dispatch<SetStateAction<string>>;
 }
 
 export function NumericalInputContainer({
   heightOfWater,
   volumeOfWater,
+  depthOfBreach,
+  heightOfDam,
+  averageWidth,
   onHeightOfWaterChange,
   onVolumeOfWaterChange,
+  onDepthOfBreachChange,
+  onHeightOfDamChange,
+  onAverageWidthChange,
 }: NumericalInputContainerProps) {
   return (
     <div>
       <NumericalInput
         variableName="H_w"
-        description="Height of water from the breach bottom"
+        description="Height of water above the breach bottom"
         value={heightOfWater}
         units="m"
         required={true}
@@ -101,19 +111,21 @@ export function NumericalInputContainer({
       />
       <NumericalInput
         variableName="V_w"
-        description="Live storage volume; volume of water above the breach bottom"
+        description="Volume of water above the breach bottom"
         units="m³"
         required={true}
         value={volumeOfWater}
         reasonableMaximum={60000000000}
         onValueChange={onVolumeOfWaterChange}
       />
-      {/* <NumericalInput
+      <NumericalInput
         variableName="H_b"
-        description="Depth of breach from the crest"
+        description="Depth of breach from the crest to the breach bottom"
         units="m"
         required={false}
         reasonableMaximum={1000}
+        value={depthOfBreach}
+        onValueChange={onDepthOfBreachChange}
       />
       <NumericalInput
         variableName="H_d"
@@ -121,14 +133,18 @@ export function NumericalInputContainer({
         units="m"
         required={false}
         reasonableMaximum={1000}
+        value={heightOfDam}
+        onValueChange={onHeightOfDamChange}
       />
       <NumericalInput
         variableName="W_avg"
-        description="Average embankment width"
+        description="Average embankment width (in the direction parallel to flow)"
         units="m"
         required={false}
         reasonableMaximum={1000}
-      /> */}
+        value={averageWidth}
+        onValueChange={onAverageWidthChange}
+      />
     </div>
   );
 }

@@ -1,35 +1,67 @@
-'use client'
+"use client";
 
 import { DamDescriptionContainer } from "@/components/descriptionInputs";
-import {
-  NumericalInputContainer,
-} from "@/components/numericalInputs";
+import { NumericalInputContainer } from "@/components/numericalInputs";
 import { ResultContainer } from "@/components/results";
 import Image from "next/image";
 import { useState } from "react";
 
 function ToolContainer() {
-  const [heightOfWater, setHeightOfWater] = useState(5);
-  const [volumeOfWater, setVolumeOfWater] = useState(30000);
-  const [peakFlowEquationName, setPeakFlowEquation] = useState("Froehlich (1995a)")
+  const [heightOfWater, setHeightOfWater] = useState("5");
+  const [volumeOfWater, setVolumeOfWater] = useState("30000");
+  const [depthOfBreach, setDepthOfBreach] = useState("");
+  const [heightOfDam, setHeightOfDam] = useState("");
+  const [averageWidth, setAverageWidth] = useState("");
+  const [failureMode, setFailureMode] = useState("overtopping");
+  const [erodibility, setErodibility] = useState("medium");
+  const [damType, setDamType] = useState("homogenous-fill");
+  const [originalOrRecalibrated, setRecalibrated] = useState("original");
+  const [peakFlowEquationName, setPeakFlowEquation] =
+    useState("Froehlich (1995a)");
+  const [timeToFailureEquationName, setTimeToFailureEquation] =
+    useState("Froehlich (1995b)");
 
   return (
-    <div className="">
+    <div className="rounded-xl p-10 border border-stone-600 border-dashed" >
       <DamDescriptionContainer
         peakFlowEquationName={peakFlowEquationName}
         onPeakFlowEquationChange={setPeakFlowEquation}
+        timeToFailureEquationName={timeToFailureEquationName}
+        onTimeToFailureEquationChange={setTimeToFailureEquation}
+        failureMode={failureMode}
+        onFailureModeChange={setFailureMode}
+        erodibility={erodibility}
+        onErodibilityChange={setErodibility}
+        damType={damType}
+        onDamTypeChange={setDamType}
+        originalOrRecalibrated={originalOrRecalibrated}
+        onRecalibratedChange={setRecalibrated}
       />
-      <div className="grid grid-cols-2">
+      <div className="grid grid-cols-2 gap-x-5">
         <NumericalInputContainer
           heightOfWater={heightOfWater}
           onHeightOfWaterChange={setHeightOfWater}
           volumeOfWater={volumeOfWater}
           onVolumeOfWaterChange={setVolumeOfWater}
+          depthOfBreach={depthOfBreach}
+          onDepthOfBreachChange={setDepthOfBreach}
+          heightOfDam={heightOfDam}
+          onHeightOfDamChange={setHeightOfDam}
+          averageWidth={averageWidth}
+          onAverageWidthChange={setAverageWidth}
         />
         <ResultContainer
           peakFlowEquationName={peakFlowEquationName}
+          timeToFailureEquationName={timeToFailureEquationName}
+          originalOrRecalibrated={originalOrRecalibrated}
           heightOfWater={heightOfWater}
           volumeOfWater={volumeOfWater}
+          depthOfBreach={depthOfBreach}
+          heightOfDam={heightOfDam}
+          averageWidth={averageWidth}
+          erodibility={erodibility}
+          damType={damType}
+          failureMode={failureMode}
         />
       </div>
     </div>

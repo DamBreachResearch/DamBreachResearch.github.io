@@ -21,7 +21,7 @@ class EmpiricalEquation {
   stdev: number;
   reMean: number;
   reStdev: number;
-  predict: Estimate;
+  ogPredict: Estimate;
   rePredict: Estimate;
 
   constructor(shortName: string) {
@@ -36,15 +36,55 @@ class EmpiricalEquation {
     this.reMean = eqn.reMean;
     this.reStdev = eqn.reStdev;
 
-    this.predict = eqn.func;
+    this.ogPredict = eqn.func;
     this.rePredict = eqn.reFunc;
+  }
+
+  getUpperBoundRatio(useRecalibrated: boolean) {
+    // Note: the mean is negative because these means are pred/obs and we want obs/pred
+    if (useRecalibrated) {
+      return 10 ** (-1 * this.reMean + 1.645 * this.reStdev); // one-sided 95% confidence interval
+    } else {
+      return 10 ** (-1 * this.mean + 1.645 * this.stdev);
+    }
+  }
+
+  getLowerBoundRatio(useRecalibrated: boolean) {
+    // Note: the mean is negative because these means are pred/obs and we want obs/pred
+    if (useRecalibrated) {
+      return 10 ** (-1 * this.reMean - 1.645 * this.reStdev); // one-sided 95% confidence interval
+    } else {
+      return 10 ** (-1 * this.mean - 1.645 * this.stdev);
+    }
+  }
+
+  predict(dam: DamFailure, useRecalibrated: boolean) {
+    if (useRecalibrated) {
+      return this.rePredict(dam);
+    } else {
+      return this.ogPredict(dam);
+    }
   }
 }
 
-class PeakFlowEquation extends EmpiricalEquation {
+export class PeakFlowEquation extends EmpiricalEquation {
   units: string = "m³/s";
   constructor(shortName: string) {
     super(shortName + "-Q");
+  }
+}
+
+export class TimeToFailureEquation extends EmpiricalEquation {
+  units: string = "h";
+  constructor(shortName: string) {
+    super(shortName + "-T");
+  }
+}
+
+export class BreachWidthEquation extends EmpiricalEquation {
+  units: string = "m";
+  constructor(shortName: string) {
+    super(shortName + "-B");
   }
 }
 

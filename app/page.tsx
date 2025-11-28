@@ -24,14 +24,16 @@ function ToolContainer() {
     useState("Froehlich (1995b)");
 
   return (
-    <div className="rounded-xl p-10 bg-slate-900">
+    <div className="rounded-xl mx-auto bg-slate-900 max-w-9/10 p-4">
       <div className="grid grid-cols-2 gap-x-5">
-        <DamSchematic
-          heightOfWater={heightOfWater}
-          depthOfBreach={depthOfBreach}
-          heightOfDam={heightOfDam}
-          averageWidth={averageWidth}
-        />
+        <div className="canvasWrapper self-stretch flex justify-center min-h-0">
+          <DamSchematic
+            heightOfWater={heightOfWater}
+            depthOfBreach={depthOfBreach}
+            heightOfDam={heightOfDam}
+            averageWidth={averageWidth}
+          />
+        </div>
         <DamDescriptionContainer
           peakFlowEquationName={peakFlowEquationName}
           onPeakFlowEquationChange={setPeakFlowEquation}
@@ -96,7 +98,7 @@ export default function Home() {
         </div>
       </div>
       <div id="main" role="main" className="container">
-        <article className="page mx-30">
+        <article className="page mx-auto">
           <h3 className="text-xl pb-4 font-light text-stone-200">
             Using empirical equations to predict embankment dam breach
             characteristics.

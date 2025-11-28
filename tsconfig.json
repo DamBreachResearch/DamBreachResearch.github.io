@@ -37,7 +37,9 @@
     "**/*.mts",
     "components/predupdate.js",
     "dist/types/**/*.ts",
-    "dist/dev/types/**/*.ts"
+    "dist/dev/types/**/*.ts",
+    "docs/types/**/*.ts",
+    "docs/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

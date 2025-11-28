@@ -30,9 +30,7 @@ function SelectionInput({
         id={name}
         name={name}
         className={
-          "w-" +
-          maxSize * 12 +
-          " text-center bg-slate-700 hover:bg-slate-600 rounded-xl pl-2 text-2xl"
+          "text-center bg-slate-700 hover:bg-slate-600 rounded-xl pl-2 text-2xl"
         }
         value={value}
         onChange={(e) => onValueChange(e.target.value)}

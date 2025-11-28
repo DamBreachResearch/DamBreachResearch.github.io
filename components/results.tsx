@@ -8,7 +8,8 @@ import { timeStringFormat } from "./utils/formatting";
 interface ResultContainerInputs {
   peakFlowEquationName: string;
   timeToFailureEquationName: string;
-  originalOrRecalibrated: string;
+  originalOrRecalibratedQ: string;
+  originalOrRecalibratedT: string;
   heightOfWater: string;
   volumeOfWater: string;
   depthOfBreach: string;
@@ -22,7 +23,8 @@ interface ResultContainerInputs {
 export function ResultContainer({
   peakFlowEquationName,
   timeToFailureEquationName,
-  originalOrRecalibrated,
+  originalOrRecalibratedQ,
+  originalOrRecalibratedT,
   heightOfWater,
   volumeOfWater,
   depthOfBreach,
@@ -41,7 +43,8 @@ export function ResultContainer({
   let h_b = Number(depthOfBreach?.replace(/,/g, ""));
   let h_d = Number(heightOfDam?.replace(/,/g, ""));
   let w_avg = Number(averageWidth?.replace(/,/g, ""));
-  const useRecalibrated = originalOrRecalibrated === "recalibrated";
+  const useRecalibratedQ = originalOrRecalibratedQ === "recalibrated";
+  const useRecalibratedT = originalOrRecalibratedT === "recalibrated";
 
   if (!h_w || !v_w) {
     return (
@@ -74,9 +77,12 @@ export function ResultContainer({
     type: damType,
   };
 
-  const peakFlowPrediction = peakFlowEquation.predict(inputDam, useRecalibrated);
+  const peakFlowPrediction = peakFlowEquation.predict(
+    inputDam,
+    useRecalibratedQ
+  );
   const peakFlowUpperBound =
-    peakFlowEquation.getUpperBoundRatio(useRecalibrated) * peakFlowPrediction;
+    peakFlowEquation.getUpperBoundRatio(useRecalibratedQ) * peakFlowPrediction;
 
   const peakFlowFormatted = parseFloat(
     peakFlowPrediction.toPrecision(2)
@@ -87,11 +93,13 @@ export function ResultContainer({
 
   const timeToFailurePrediction = timeToFailureEquation.predict(
     inputDam,
-    useRecalibrated
+    useRecalibratedT
   );
   const timeToFailureUpperBound = timeStringFormat(
-    Number(timeToFailureEquation.getLowerBoundRatio(useRecalibrated) *
-      timeToFailurePrediction).toPrecision(2)
+    Number(
+      timeToFailureEquation.getLowerBoundRatio(useRecalibratedT) *
+        timeToFailurePrediction
+    ).toPrecision(2)
   );
   const timeToFailureFormatted = timeStringFormat(timeToFailurePrediction);
 

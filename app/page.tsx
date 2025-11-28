@@ -16,7 +16,8 @@ function ToolContainer() {
   const [failureMode, setFailureMode] = useState("overtopping");
   const [erodibility, setErodibility] = useState("medium");
   const [damType, setDamType] = useState("homogenous-fill");
-  const [originalOrRecalibrated, setRecalibrated] = useState("original");
+  const [originalOrRecalibratedQ, setRecalibratedQ] = useState("original");
+  const [originalOrRecalibratedT, setRecalibratedT] = useState("original");
   const [peakFlowEquationName, setPeakFlowEquation] =
     useState("Froehlich (1995a)");
   const [timeToFailureEquationName, setTimeToFailureEquation] =
@@ -24,26 +25,30 @@ function ToolContainer() {
 
   return (
     <div className="rounded-xl p-10 bg-slate-900">
-      <DamSchematic
-        heightOfWater={heightOfWater}
-        depthOfBreach={depthOfBreach}
-        heightOfDam={heightOfDam}
-        averageWidth={averageWidth}
-      />
-      <DamDescriptionContainer
-        peakFlowEquationName={peakFlowEquationName}
-        onPeakFlowEquationChange={setPeakFlowEquation}
-        timeToFailureEquationName={timeToFailureEquationName}
-        onTimeToFailureEquationChange={setTimeToFailureEquation}
-        failureMode={failureMode}
-        onFailureModeChange={setFailureMode}
-        erodibility={erodibility}
-        onErodibilityChange={setErodibility}
-        damType={damType}
-        onDamTypeChange={setDamType}
-        originalOrRecalibrated={originalOrRecalibrated}
-        onRecalibratedChange={setRecalibrated}
-      />
+      <div className="grid grid-cols-2 gap-x-5">
+        <DamSchematic
+          heightOfWater={heightOfWater}
+          depthOfBreach={depthOfBreach}
+          heightOfDam={heightOfDam}
+          averageWidth={averageWidth}
+        />
+        <DamDescriptionContainer
+          peakFlowEquationName={peakFlowEquationName}
+          onPeakFlowEquationChange={setPeakFlowEquation}
+          timeToFailureEquationName={timeToFailureEquationName}
+          onTimeToFailureEquationChange={setTimeToFailureEquation}
+          failureMode={failureMode}
+          onFailureModeChange={setFailureMode}
+          erodibility={erodibility}
+          onErodibilityChange={setErodibility}
+          damType={damType}
+          onDamTypeChange={setDamType}
+          originalOrRecalibratedQ={originalOrRecalibratedQ}
+          onRecalibratedQChange={setRecalibratedQ}
+          originalOrRecalibratedT={originalOrRecalibratedT}
+          onRecalibratedTChange={setRecalibratedT}
+        />
+      </div>
       <div className="grid grid-cols-2 gap-x-5">
         <NumericalInputContainer
           heightOfWater={heightOfWater}
@@ -60,7 +65,8 @@ function ToolContainer() {
         <ResultContainer
           peakFlowEquationName={peakFlowEquationName}
           timeToFailureEquationName={timeToFailureEquationName}
-          originalOrRecalibrated={originalOrRecalibrated}
+          originalOrRecalibratedQ={originalOrRecalibratedQ}
+          originalOrRecalibratedT={originalOrRecalibratedT}
           heightOfWater={heightOfWater}
           volumeOfWater={volumeOfWater}
           depthOfBreach={depthOfBreach}

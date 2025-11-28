@@ -193,7 +193,7 @@ export default function DamSchematic({
     <div className="flex justify-center">
       <Canvas
         width={400}
-        height={200}
+        height={300}
         draw={draw}
         dependencyArray={[
           heightOfDam,

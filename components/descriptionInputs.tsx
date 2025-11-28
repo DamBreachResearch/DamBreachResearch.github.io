@@ -57,8 +57,10 @@ interface DamDescriptionProperties {
   onErodibilityChange: Dispatch<SetStateAction<string>>;
   damType: string;
   onDamTypeChange: Dispatch<SetStateAction<string>>;
-  originalOrRecalibrated: string;
-  onRecalibratedChange: Dispatch<SetStateAction<string>>;
+  originalOrRecalibratedQ: string;
+  onRecalibratedQChange: Dispatch<SetStateAction<string>>;
+  originalOrRecalibratedT: string;
+  onRecalibratedTChange: Dispatch<SetStateAction<string>>;
 }
 
 export function DamDescriptionContainer({
@@ -72,8 +74,10 @@ export function DamDescriptionContainer({
   onErodibilityChange,
   damType,
   onDamTypeChange,
-  originalOrRecalibrated,
-  onRecalibratedChange,
+  originalOrRecalibratedQ,
+  onRecalibratedQChange,
+  originalOrRecalibratedT,
+  onRecalibratedTChange,
 }: DamDescriptionProperties) {
   return (
     <div className="dam-description pb-4 text-center">
@@ -84,6 +88,7 @@ export function DamDescriptionContainer({
         value={failureMode}
         onValueChange={onFailureModeChange}
       />
+      <br />
       <span className="text-2xl"> of a </span>
       <SelectionInput
         name="erodibility"
@@ -91,6 +96,7 @@ export function DamDescriptionContainer({
         value={erodibility}
         onValueChange={onErodibilityChange}
       />
+      <br />
       <span className="text-2xl"> </span>
       <SelectionInput
         name="dam"
@@ -98,13 +104,15 @@ export function DamDescriptionContainer({
         value={damType}
         onValueChange={onDamTypeChange}
       />
-      <span className="text-2xl">, calculate the peak flow using the </span>
+      <span className="text-2xl">, </span>
+      <br />
+      <span className="text-2xl">calculate the peak flow using the </span>
       <SelectionInput
         name="recalibrated"
         suppressName={true}
         options={["original", "recalibrated"]}
-        value={originalOrRecalibrated}
-        onValueChange={onRecalibratedChange}
+        value={originalOrRecalibratedQ}
+        onValueChange={onRecalibratedQChange}
       />
       <SelectionInput
         name="peak flow equation"
@@ -121,7 +129,15 @@ export function DamDescriptionContainer({
         value={peakFlowEquationName}
         onValueChange={onPeakFlowEquationChange}
       />
-             <span className="text-2xl"> and the time to failure using the </span>
+      <br />
+      <span className="text-2xl"> and the time to failure using the </span>
+      <SelectionInput
+        name="recalibrated"
+        suppressName={true}
+        options={["original", "recalibrated"]}
+        value={originalOrRecalibratedT}
+        onValueChange={onRecalibratedTChange}
+      />
       <SelectionInput
         name="time to failure equation"
         options={[

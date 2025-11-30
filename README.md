@@ -10,7 +10,6 @@ The goal of this project is to support engineers, researchers, and students by o
 Dam breach modeling is a crucial component of risk assessment, emergency planning, and hydraulic analysis. Traditional empirical equations—while widely applied—often exhibit considerable prediction variability.
 This project addresses that limitation by:
 
-- Implementing standard empirical dam breach equations.
 - Providing recalibrated equations based on the thesis research.
 - Presenting confidence intervals for predicted outputs, derived from statistical analysis of model error.
 - Offering a clear, user-friendly interface for entering dam properties and viewing results.

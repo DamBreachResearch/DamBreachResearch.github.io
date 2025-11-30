@@ -19,8 +19,8 @@ export default function Canvas({
       const context = canvasRef.current.getContext("2d");
 
       if (context) {
-        // context.canvas.height = height;
-        // context.canvas.width = width;
+        context.canvas.height = height;
+        context.canvas.width = width;
 
         frameRef.current = requestAnimationFrame(() => draw(context));
       }
@@ -28,5 +28,5 @@ export default function Canvas({
     return () => cancelAnimationFrame(frameRef.current);
   }, [height, width, draw, ...dependencyArray]);
 
-  return <canvas width={300} height={300} className="min-h-0 max-w-1/1" ref={canvasRef} />;
+  return <canvas width={width} height={height} className="min-h-0 max-w-1/1 mx-auto" ref={canvasRef} />;
 }

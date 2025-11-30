@@ -78,7 +78,7 @@ export function DamDescriptionContainer({
   onRecalibratedTChange,
 }: DamDescriptionProperties) {
   return (
-    <div className="dam-description pb-4 text-center">
+    <div className="dam-description text-center">
       <span className="text-2xl">For the </span>
       <SelectionInput
         name="failure"
@@ -105,6 +105,7 @@ export function DamDescriptionContainer({
       <span className="text-2xl">, </span>
       <br />
       <span className="text-2xl">calculate the peak flow using the </span>
+      <br />
       <SelectionInput
         name="recalibrated"
         suppressName={true}
@@ -129,6 +130,7 @@ export function DamDescriptionContainer({
       />
       <br />
       <span className="text-2xl"> and the time to failure using the </span>
+      <br />
       <SelectionInput
         name="recalibrated"
         suppressName={true}

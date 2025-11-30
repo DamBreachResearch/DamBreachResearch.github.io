@@ -5,11 +5,13 @@ export default function DamSchematic({
   depthOfBreach,
   heightOfDam,
   averageWidth,
+  canvasSize,
 }: {
   heightOfWater: string;
   depthOfBreach: string;
   heightOfDam: string;
   averageWidth: string;
+  canvasSize: {width: number, height: number};
 }) {
   const draw = (ctx: CanvasRenderingContext2D) => {
     let h_w = Number(heightOfWater?.replace(/,/g, ""));
@@ -43,7 +45,7 @@ export default function DamSchematic({
     if (ctx) {
       const wMax = ctx.canvas.width;
       const hMax = ctx.canvas.height;
-      const verticalExaggeration = 2;
+      const verticalExaggeration = 1;
 
       // Calculate maximum unit sizes for the figure
       let hBUnitLimit = ((hMax / 4) * h_d) / (h_b - h_d);
@@ -74,6 +76,8 @@ export default function DamSchematic({
       const leftToeX = leftCrestX - (unit * slope) / verticalExaggeration;
       const rightToeX = rightCrestX + (unit * slope) / verticalExaggeration;
 
+      // Clear area first
+      ctx.clearRect(0, 0, wMax, hMax);
       // 2D dam shape
       ctx.beginPath();
       ctx.strokeStyle = "white";
@@ -190,10 +194,9 @@ export default function DamSchematic({
     }
   };
   return (
-    <div className="flex justify-center">
       <Canvas
-        width={400}
-        height={300}
+        width={canvasSize.width}
+        height={canvasSize.height}
         draw={draw}
         dependencyArray={[
           heightOfDam,
@@ -202,7 +205,6 @@ export default function DamSchematic({
           averageWidth,
         ]}
       />
-    </div>
   );
 }
 

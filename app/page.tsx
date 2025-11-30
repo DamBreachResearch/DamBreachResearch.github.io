@@ -22,18 +22,18 @@ function ToolContainer() {
     useState("Froehlich (1995a)");
   const [timeToFailureEquationName, setTimeToFailureEquation] =
     useState("Froehlich (1995b)");
+  const [canvasSize, setCanvasSize] = useState({ width: 384, height: 320 });
 
   return (
     <div className="rounded-xl mx-auto bg-slate-900 max-w-9/10 p-4">
-      <div className="grid grid-cols-2 gap-x-5">
-        <div className="canvasWrapper self-stretch flex justify-center min-h-0">
-          <DamSchematic
-            heightOfWater={heightOfWater}
-            depthOfBreach={depthOfBreach}
-            heightOfDam={heightOfDam}
-            averageWidth={averageWidth}
-          />
-        </div>
+      <div className="grid grid-cols-2 gap-x-5 place-content-center">
+        <DamSchematic
+          heightOfWater={heightOfWater}
+          depthOfBreach={depthOfBreach}
+          heightOfDam={heightOfDam}
+          averageWidth={averageWidth}
+          canvasSize={canvasSize}
+        />
         <DamDescriptionContainer
           peakFlowEquationName={peakFlowEquationName}
           onPeakFlowEquationChange={setPeakFlowEquation}

@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
+import { DamFailureInput } from "./empiricalEqn";
 
 function SelectionInput({
   name,
@@ -59,6 +60,8 @@ interface DamDescriptionProperties {
   onRecalibratedQChange: Dispatch<SetStateAction<string>>;
   originalOrRecalibratedT: string;
   onRecalibratedTChange: Dispatch<SetStateAction<string>>;
+  damFailure: DamFailureInput;
+  onDamFailureChange: Dispatch<SetStateAction<DamFailureInput>>;
 }
 
 export function DamDescriptionContainer({
@@ -76,6 +79,8 @@ export function DamDescriptionContainer({
   onRecalibratedQChange,
   originalOrRecalibratedT,
   onRecalibratedTChange,
+  damFailure,
+  onDamFailureChange,
 }: DamDescriptionProperties) {
   return (
     <div className="dam-description text-center">

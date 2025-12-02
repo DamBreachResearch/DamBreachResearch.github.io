@@ -11,6 +11,17 @@ export interface DamFailure {
   type: string;
 }
 
+export interface DamFailureInput {
+  heightOfWater: string;
+  volumeOfWater: string;
+  depthOfBreach: string;
+  heightOfDam: string;
+  averageWidth: string;
+  failureMode: string;
+  erodibility: string;
+  damType: string;
+}
+
 export type Estimate = (dam: DamFailure) => number;
 
 class EmpiricalEquation {

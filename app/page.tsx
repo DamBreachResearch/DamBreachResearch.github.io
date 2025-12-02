@@ -23,6 +23,16 @@ function ToolContainer() {
   const [timeToFailureEquationName, setTimeToFailureEquation] =
     useState("Froehlich (1995b)");
   const [canvasSize, setCanvasSize] = useState({ width: 384, height: 320 });
+  const [damFailure, setDamFailure] = useState({
+    heightOfWater: "5.0",
+    volumeOfWater: "30,000",
+    depthOfBreach: "",
+    heightOfDam: "",
+    averageWidth: "",
+    failureMode: "overtopping",
+    erodibility: "medium",
+    damType: "homogenous-fill",
+  });
 
   return (
     <div className="rounded-xl mx-auto bg-slate-900 max-w-9/10 p-4">
@@ -32,6 +42,7 @@ function ToolContainer() {
           depthOfBreach={depthOfBreach}
           heightOfDam={heightOfDam}
           averageWidth={averageWidth}
+          damFailure={damFailure}
           canvasSize={canvasSize}
         />
         <DamDescriptionContainer
@@ -49,6 +60,8 @@ function ToolContainer() {
           onRecalibratedQChange={setRecalibratedQ}
           originalOrRecalibratedT={originalOrRecalibratedT}
           onRecalibratedTChange={setRecalibratedT}
+          damFailure={damFailure}
+          onDamFailureChange={setDamFailure}
         />
       </div>
       <div className="grid grid-cols-2 gap-x-5">

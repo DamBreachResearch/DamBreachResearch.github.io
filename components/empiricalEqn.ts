@@ -31,7 +31,7 @@ export interface EquationState {
 
 export type Estimate = (dam: DamFailure) => number;
 
-class EmpiricalEquation {
+export class EmpiricalEquation {
   shortName: string;
   name: string;
   description: string;

@@ -6,6 +6,13 @@ import { ResultContainer } from "@/components/results";
 import DamSchematic from "@/components/schematic";
 import Image from "next/image";
 import { useState } from "react";
+import dynamic from "next/dynamic";
+import { PeakFlowEquation } from "@/components/empiricalEqn";
+
+const ChartContainer = dynamic(
+  () => import("@/components/utils/chartContainer"),
+  { ssr: false }
+);
 
 function ToolContainer() {
   const [canvasSize, setCanvasSize] = useState({ width: 384, height: 320 });
@@ -22,25 +29,20 @@ function ToolContainer() {
   const [equationState, setEquationState] = useState({
     peakFlowEquationName: "Froehlich (1995a)",
     timeToFailureEquationName: "Froehlich (1995b)",
-    peakFlowEquationType: 'original',
-    timeToFailureEquationType: 'original'
-  })
+    peakFlowEquationType: "original",
+    timeToFailureEquationType: "original",
+  });
 
   return (
     <div className="rounded-xl mx-auto bg-slate-900 max-w-9/10 p-4">
-      <div className="grid grid-cols-2 gap-x-5 place-content-center">
-        <DamSchematic
-          damFailure={damFailure}
-          canvasSize={canvasSize}
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-5 place-content-center">
+        <DamSchematic damFailure={damFailure} canvasSize={canvasSize} />
         <DamDescriptionContainer
           damFailure={damFailure}
           setDamFailure={setDamFailure}
           equationState={equationState}
           setEquationState={setEquationState}
         />
-      </div>
-      <div className="grid grid-cols-2 gap-x-5">
         <NumericalInputContainer
           damFailure={damFailure}
           setDamFailure={setDamFailure}
@@ -48,6 +50,13 @@ function ToolContainer() {
         <ResultContainer
           equationState={equationState}
           damFailure={damFailure}
+        />
+        <ChartContainer
+          height={384}
+          width={320}
+          damFailure={damFailure}
+          equationName={equationState.peakFlowEquationName + "-Q"}
+          recalibrated={equationState.peakFlowEquationType === "recalibrated"}
         />
       </div>
     </div>

@@ -8,75 +8,46 @@ import Image from "next/image";
 import { useState } from "react";
 
 function ToolContainer() {
-  const [heightOfWater, setHeightOfWater] = useState("5.0");
-  const [volumeOfWater, setVolumeOfWater] = useState("30,000");
-  const [depthOfBreach, setDepthOfBreach] = useState("");
-  const [heightOfDam, setHeightOfDam] = useState("");
-  const [averageWidth, setAverageWidth] = useState("");
-  const [failureMode, setFailureMode] = useState("overtopping");
-  const [erodibility, setErodibility] = useState("medium");
-  const [damType, setDamType] = useState("homogenous-fill");
-  const [originalOrRecalibratedQ, setRecalibratedQ] = useState("original");
-  const [originalOrRecalibratedT, setRecalibratedT] = useState("original");
-  const [peakFlowEquationName, setPeakFlowEquation] =
-    useState("Froehlich (1995a)");
-  const [timeToFailureEquationName, setTimeToFailureEquation] =
-    useState("Froehlich (1995b)");
   const [canvasSize, setCanvasSize] = useState({ width: 384, height: 320 });
+  const [damFailure, setDamFailure] = useState({
+    heightOfWater: "5.0",
+    volumeOfWater: "30,000",
+    depthOfBreach: "",
+    heightOfDam: "",
+    averageWidth: "",
+    failureMode: "overtopping",
+    erodibility: "medium",
+    damType: "homogenous-fill",
+  });
+  const [equationState, setEquationState] = useState({
+    peakFlowEquationName: "Froehlich (1995a)",
+    timeToFailureEquationName: "Froehlich (1995b)",
+    peakFlowEquationType: 'original',
+    timeToFailureEquationType: 'original'
+  })
 
   return (
     <div className="rounded-xl mx-auto bg-slate-900 max-w-9/10 p-4">
       <div className="grid grid-cols-2 gap-x-5 place-content-center">
         <DamSchematic
-          heightOfWater={heightOfWater}
-          depthOfBreach={depthOfBreach}
-          heightOfDam={heightOfDam}
-          averageWidth={averageWidth}
+          damFailure={damFailure}
           canvasSize={canvasSize}
         />
         <DamDescriptionContainer
-          peakFlowEquationName={peakFlowEquationName}
-          onPeakFlowEquationChange={setPeakFlowEquation}
-          timeToFailureEquationName={timeToFailureEquationName}
-          onTimeToFailureEquationChange={setTimeToFailureEquation}
-          failureMode={failureMode}
-          onFailureModeChange={setFailureMode}
-          erodibility={erodibility}
-          onErodibilityChange={setErodibility}
-          damType={damType}
-          onDamTypeChange={setDamType}
-          originalOrRecalibratedQ={originalOrRecalibratedQ}
-          onRecalibratedQChange={setRecalibratedQ}
-          originalOrRecalibratedT={originalOrRecalibratedT}
-          onRecalibratedTChange={setRecalibratedT}
+          damFailure={damFailure}
+          setDamFailure={setDamFailure}
+          equationState={equationState}
+          setEquationState={setEquationState}
         />
       </div>
       <div className="grid grid-cols-2 gap-x-5">
         <NumericalInputContainer
-          heightOfWater={heightOfWater}
-          onHeightOfWaterChange={setHeightOfWater}
-          volumeOfWater={volumeOfWater}
-          onVolumeOfWaterChange={setVolumeOfWater}
-          depthOfBreach={depthOfBreach}
-          onDepthOfBreachChange={setDepthOfBreach}
-          heightOfDam={heightOfDam}
-          onHeightOfDamChange={setHeightOfDam}
-          averageWidth={averageWidth}
-          onAverageWidthChange={setAverageWidth}
+          damFailure={damFailure}
+          setDamFailure={setDamFailure}
         />
         <ResultContainer
-          peakFlowEquationName={peakFlowEquationName}
-          timeToFailureEquationName={timeToFailureEquationName}
-          originalOrRecalibratedQ={originalOrRecalibratedQ}
-          originalOrRecalibratedT={originalOrRecalibratedT}
-          heightOfWater={heightOfWater}
-          volumeOfWater={volumeOfWater}
-          depthOfBreach={depthOfBreach}
-          heightOfDam={heightOfDam}
-          averageWidth={averageWidth}
-          erodibility={erodibility}
-          damType={damType}
-          failureMode={failureMode}
+          equationState={equationState}
+          damFailure={damFailure}
         />
       </div>
     </div>

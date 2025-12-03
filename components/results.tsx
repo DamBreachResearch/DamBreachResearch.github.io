@@ -1,50 +1,32 @@
 import {
   DamFailure,
+  DamFailureInput,
+  EquationState,
   PeakFlowEquation,
   TimeToFailureEquation,
 } from "./empiricalEqn";
 import { timeStringFormat } from "./utils/formatting";
 
 interface ResultContainerInputs {
-  peakFlowEquationName: string;
-  timeToFailureEquationName: string;
-  originalOrRecalibratedQ: string;
-  originalOrRecalibratedT: string;
-  heightOfWater: string;
-  volumeOfWater: string;
-  depthOfBreach: string;
-  heightOfDam: string;
-  averageWidth: string;
-  failureMode: string;
-  erodibility: string;
-  damType: string;
+  damFailure: DamFailureInput;
+  equationState: EquationState;
 }
 
 export function ResultContainer({
-  peakFlowEquationName,
-  timeToFailureEquationName,
-  originalOrRecalibratedQ,
-  originalOrRecalibratedT,
-  heightOfWater,
-  volumeOfWater,
-  depthOfBreach,
-  heightOfDam,
-  averageWidth,
-  failureMode,
-  erodibility,
-  damType,
+  damFailure,
+  equationState
 }: ResultContainerInputs) {
-  const peakFlowEquation = new PeakFlowEquation(peakFlowEquationName);
+  const peakFlowEquation = new PeakFlowEquation(equationState.peakFlowEquationName);
   const timeToFailureEquation = new TimeToFailureEquation(
-    timeToFailureEquationName
+    equationState.timeToFailureEquationName
   );
-  const h_w = Number(heightOfWater?.replace(/,/g, ""));
-  const v_w = Number(volumeOfWater?.replace(/,/g, ""));
-  let h_b = Number(depthOfBreach?.replace(/,/g, ""));
-  let h_d = Number(heightOfDam?.replace(/,/g, ""));
-  let w_avg = Number(averageWidth?.replace(/,/g, ""));
-  const useRecalibratedQ = originalOrRecalibratedQ === "recalibrated";
-  const useRecalibratedT = originalOrRecalibratedT === "recalibrated";
+  const h_w = Number(damFailure.heightOfWater?.replace(/,/g, ""));
+  const v_w = Number(damFailure.volumeOfWater?.replace(/,/g, ""));
+  let h_b = Number(damFailure.depthOfBreach?.replace(/,/g, ""));
+  let h_d = Number(damFailure.heightOfDam?.replace(/,/g, ""));
+  let w_avg = Number(damFailure.averageWidth?.replace(/,/g, ""));
+  const useRecalibratedQ = equationState.peakFlowEquationType === "recalibrated";
+  const useRecalibratedT = equationState.timeToFailureEquationType === "recalibrated";
 
   if (!h_w || !v_w) {
     return (
@@ -72,9 +54,9 @@ export function ResultContainer({
     h_d: h_d,
     h_b: h_b,
     w_avg: w_avg,
-    erodibility: erodibility,
-    mode: failureMode,
-    type: damType,
+    erodibility: damFailure.erodibility,
+    mode: damFailure.failureMode,
+    type: damFailure.damType,
   };
 
   const peakFlowPrediction = peakFlowEquation.predict(

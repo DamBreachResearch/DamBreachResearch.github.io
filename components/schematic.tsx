@@ -1,23 +1,18 @@
+import { DamFailureInput } from "./empiricalEqn";
 import Canvas from "./utils/canvas";
 
 export default function DamSchematic({
-  heightOfWater,
-  depthOfBreach,
-  heightOfDam,
-  averageWidth,
+  damFailure,
   canvasSize,
 }: {
-  heightOfWater: string;
-  depthOfBreach: string;
-  heightOfDam: string;
-  averageWidth: string;
-  canvasSize: {width: number, height: number};
+  damFailure: DamFailureInput;
+  canvasSize: { width: number; height: number };
 }) {
   const draw = (ctx: CanvasRenderingContext2D) => {
-    let h_w = Number(heightOfWater?.replace(/,/g, ""));
-    let h_b = Number(depthOfBreach?.replace(/,/g, ""));
-    let h_d = Number(heightOfDam?.replace(/,/g, ""));
-    let w_avg = Number(averageWidth?.replace(/,/g, ""));
+    let h_w = Number(damFailure.heightOfWater?.replace(/,/g, ""));
+    let h_b = Number(damFailure.depthOfBreach?.replace(/,/g, ""));
+    let h_d = Number(damFailure.heightOfDam?.replace(/,/g, ""));
+    let w_avg = Number(damFailure.averageWidth?.replace(/,/g, ""));
 
     let assumedHb = false;
     let assumedHd = false;
@@ -194,17 +189,14 @@ export default function DamSchematic({
     }
   };
   return (
-      <Canvas
-        width={canvasSize.width}
-        height={canvasSize.height}
-        draw={draw}
-        dependencyArray={[
-          heightOfDam,
-          heightOfWater,
-          depthOfBreach,
-          averageWidth,
-        ]}
-      />
+    <Canvas
+      width={canvasSize.width}
+      height={canvasSize.height}
+      draw={draw}
+      dependencyArray={[
+        damFailure,
+      ]}
+    />
   );
 }
 

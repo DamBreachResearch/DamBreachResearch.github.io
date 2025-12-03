@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
+import { DamFailureInput, EquationState } from "./empiricalEqn";
 
 function SelectionInput({
   name,
@@ -10,7 +11,7 @@ function SelectionInput({
   name: string;
   options: string[];
   value: string;
-  onValueChange: Dispatch<SetStateAction<string>>;
+  onValueChange: (e: string) => void;
   suppressName?: boolean;
 }) {
   const optionsJSX = [];
@@ -45,37 +46,17 @@ function SelectionInput({
 }
 
 interface DamDescriptionProperties {
-  peakFlowEquationName: string;
-  onPeakFlowEquationChange: Dispatch<SetStateAction<string>>;
-  timeToFailureEquationName: string;
-  onTimeToFailureEquationChange: Dispatch<SetStateAction<string>>;
-  failureMode: string;
-  onFailureModeChange: Dispatch<SetStateAction<string>>;
-  erodibility: string;
-  onErodibilityChange: Dispatch<SetStateAction<string>>;
-  damType: string;
-  onDamTypeChange: Dispatch<SetStateAction<string>>;
-  originalOrRecalibratedQ: string;
-  onRecalibratedQChange: Dispatch<SetStateAction<string>>;
-  originalOrRecalibratedT: string;
-  onRecalibratedTChange: Dispatch<SetStateAction<string>>;
+  damFailure: DamFailureInput;
+  setDamFailure: Dispatch<SetStateAction<DamFailureInput>>;
+  equationState: EquationState;
+  setEquationState: Dispatch<SetStateAction<EquationState>>;
 }
 
 export function DamDescriptionContainer({
-  peakFlowEquationName,
-  onPeakFlowEquationChange,
-  timeToFailureEquationName,
-  onTimeToFailureEquationChange,
-  failureMode,
-  onFailureModeChange,
-  erodibility,
-  onErodibilityChange,
-  damType,
-  onDamTypeChange,
-  originalOrRecalibratedQ,
-  onRecalibratedQChange,
-  originalOrRecalibratedT,
-  onRecalibratedTChange,
+  damFailure,
+  setDamFailure,
+  equationState,
+  setEquationState,
 }: DamDescriptionProperties) {
   return (
     <div className="dam-description text-center">
@@ -83,24 +64,30 @@ export function DamDescriptionContainer({
       <SelectionInput
         name="failure"
         options={["overtopping", "piping"]}
-        value={failureMode}
-        onValueChange={onFailureModeChange}
+        value={damFailure.failureMode}
+        onValueChange={(e: string) =>
+          setDamFailure({ ...damFailure, failureMode: e })
+        }
       />
       <br />
       <span className="text-2xl"> of a </span>
       <SelectionInput
         name="erodibility"
         options={["low", "medium", "high"]}
-        value={erodibility}
-        onValueChange={onErodibilityChange}
+        value={damFailure.erodibility}
+        onValueChange={(e: string) =>
+          setDamFailure({ ...damFailure, erodibility: e })
+        }
       />
       <br />
       <span className="text-2xl"> </span>
       <SelectionInput
         name="dam"
         options={["homogenous-fill", "core-wall"]}
-        value={damType}
-        onValueChange={onDamTypeChange}
+        value={damFailure.damType}
+        onValueChange={(e: string) =>
+          setDamFailure({ ...damFailure, damType: e })
+        }
       />
       <span className="text-2xl">, </span>
       <br />
@@ -110,8 +97,10 @@ export function DamDescriptionContainer({
         name="recalibrated"
         suppressName={true}
         options={["original", "recalibrated"]}
-        value={originalOrRecalibratedQ}
-        onValueChange={onRecalibratedQChange}
+        value={equationState.peakFlowEquationType}
+        onValueChange={(e: string) =>
+          setEquationState({ ...equationState, peakFlowEquationType: e })
+        }
       />
       <SelectionInput
         name="peak flow equation"
@@ -125,8 +114,10 @@ export function DamDescriptionContainer({
           "Zhong et al. (2020)",
           "Yassin et al. (2025)",
         ]}
-        value={peakFlowEquationName}
-        onValueChange={onPeakFlowEquationChange}
+        value={equationState.peakFlowEquationName}
+        onValueChange={(e: string) =>
+          setEquationState({ ...equationState, peakFlowEquationName: e })
+        }
       />
       <br />
       <span className="text-2xl"> and the time to failure using the </span>
@@ -135,8 +126,10 @@ export function DamDescriptionContainer({
         name="recalibrated"
         suppressName={true}
         options={["original", "recalibrated"]}
-        value={originalOrRecalibratedT}
-        onValueChange={onRecalibratedTChange}
+        value={equationState.timeToFailureEquationType}
+        onValueChange={(e: string) =>
+          setEquationState({ ...equationState, timeToFailureEquationType: e })
+        }
       />
       <SelectionInput
         name="time to failure equation"
@@ -146,8 +139,10 @@ export function DamDescriptionContainer({
           "Xu and Zhang (2009)",
           "Zhong et al. (2020)",
         ]}
-        value={timeToFailureEquationName}
-        onValueChange={onTimeToFailureEquationChange}
+        value={equationState.timeToFailureEquationName}
+        onValueChange={(e: string) =>
+          setEquationState({ ...equationState, timeToFailureEquationName: e })
+        }
       />
       <span className="text-2xl">:</span>
     </div>

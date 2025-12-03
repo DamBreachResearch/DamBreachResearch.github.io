@@ -22,6 +22,13 @@ export interface DamFailureInput {
   damType: string;
 }
 
+export interface EquationState {
+  peakFlowEquationName: string;
+  timeToFailureEquationName: string;
+  peakFlowEquationType: string;
+  timeToFailureEquationType: string;
+}
+
 export type Estimate = (dam: DamFailure) => number;
 
 class EmpiricalEquation {

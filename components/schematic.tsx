@@ -3,17 +3,9 @@ import Canvas from "./utils/canvas";
 
 export default function DamSchematic({
   damFailure,
-  heightOfWater,
-  depthOfBreach,
-  heightOfDam,
-  averageWidth,
   canvasSize,
 }: {
   damFailure: DamFailureInput;
-  heightOfWater: string;
-  depthOfBreach: string;
-  heightOfDam: string;
-  averageWidth: string;
   canvasSize: { width: number; height: number };
 }) {
   const draw = (ctx: CanvasRenderingContext2D) => {
@@ -202,10 +194,6 @@ export default function DamSchematic({
       height={canvasSize.height}
       draw={draw}
       dependencyArray={[
-        heightOfDam,
-        heightOfWater,
-        depthOfBreach,
-        averageWidth,
         damFailure,
       ]}
     />

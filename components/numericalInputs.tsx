@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
+import { DamFailureInput } from "./empiricalEqn";
 
 interface NumericalInputProps {
   variableName: string;
@@ -7,7 +8,7 @@ interface NumericalInputProps {
   defaultValue?: number;
   required: boolean;
   value?: string;
-  onValueChange: Dispatch<SetStateAction<string>>;
+  onValueChange: (e: string) => void;
 }
 
 function NumericalInput({
@@ -21,7 +22,11 @@ function NumericalInput({
   const splitVariableName: string[] = variableName.split("_");
   const baseLetter: string = splitVariableName[0];
   const subscript: string = splitVariableName[1];
-  const starJSX = !required ? <></> : <span className="text-orange-500">*</span>;
+  const starJSX = !required ? (
+    <></>
+  ) : (
+    <span className="text-orange-500">*</span>
+  );
   return (
     <>
       <div className="mx-auto flex items-center p-1 grid grid-cols-5 gap-x-2">
@@ -62,71 +67,65 @@ function NumericalInput({
 }
 
 interface NumericalInputContainerProps {
-  heightOfWater: string;
-  volumeOfWater: string;
-  depthOfBreach: string;
-  heightOfDam: string;
-  averageWidth: string;
-  onHeightOfWaterChange: Dispatch<SetStateAction<string>>;
-  onVolumeOfWaterChange: Dispatch<SetStateAction<string>>;
-  onDepthOfBreachChange: Dispatch<SetStateAction<string>>;
-  onHeightOfDamChange: Dispatch<SetStateAction<string>>;
-  onAverageWidthChange: Dispatch<SetStateAction<string>>;
+  damFailure: DamFailureInput;
+  setDamFailure: Dispatch<SetStateAction<DamFailureInput>>;
 }
 
 export function NumericalInputContainer({
-  heightOfWater,
-  volumeOfWater,
-  depthOfBreach,
-  heightOfDam,
-  averageWidth,
-  onHeightOfWaterChange,
-  onVolumeOfWaterChange,
-  onDepthOfBreachChange,
-  onHeightOfDamChange,
-  onAverageWidthChange,
+  damFailure,
+  setDamFailure,
 }: NumericalInputContainerProps) {
   return (
     <div>
       <NumericalInput
         variableName="H_w"
         description="Height of water above the breach bottom"
-        value={heightOfWater}
+        value={damFailure.heightOfWater}
         units="m"
         required={true}
-        onValueChange={onHeightOfWaterChange}
+        onValueChange={(e: string) =>
+          setDamFailure({ ...damFailure, heightOfWater: e })
+        }
       />
       <NumericalInput
         variableName="V_w"
         description="Volume of water above the breach bottom"
         units="m³"
         required={true}
-        value={volumeOfWater}
-        onValueChange={onVolumeOfWaterChange}
+        value={damFailure.volumeOfWater}
+        onValueChange={(e: string) =>
+          setDamFailure({ ...damFailure, volumeOfWater: e })
+        }
       />
       <NumericalInput
         variableName="H_b"
         description="Depth of breach from the crest to the breach bottom"
         units="m"
         required={false}
-        value={depthOfBreach}
-        onValueChange={onDepthOfBreachChange}
+        value={damFailure.depthOfBreach}
+        onValueChange={(e: string) =>
+          setDamFailure({ ...damFailure, depthOfBreach: e })
+        }
       />
       <NumericalInput
         variableName="H_d"
         description="Height of dam from foundation to crest"
         units="m"
         required={false}
-        value={heightOfDam}
-        onValueChange={onHeightOfDamChange}
+        value={damFailure.heightOfDam}
+        onValueChange={(e: string) =>
+          setDamFailure({ ...damFailure, heightOfDam: e })
+        }
       />
       <NumericalInput
         variableName="W_avg"
         description="Average embankment width (in the direction parallel to flow)"
         units="m"
         required={false}
-        value={averageWidth}
-        onValueChange={onAverageWidthChange}
+        value={damFailure.averageWidth}
+        onValueChange={(e: string) =>
+          setDamFailure({ ...damFailure, averageWidth: e })
+        }
       />
     </div>
   );

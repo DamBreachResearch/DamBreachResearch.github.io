@@ -1,5 +1,6 @@
-import ApexCharts from "apexcharts";
+import ApexCharts, { ApexOptions } from "apexcharts";
 import { useEffect, useRef, useState } from "react";
+import ReactApexChart from "react-apexcharts";
 import {
   DamFailure,
   DamFailureInput,
@@ -19,26 +20,12 @@ export default function ChartContainer({
   equationName: string;
   recalibrated: boolean;
 }) {
-  const divRef = useRef<HTMLDivElement>(null);
-  const chartRef = useRef<ApexCharts>(null);
   const [chartOptions, setChartOptions] = useState(
     updateChartProperties(height, width, damFailure, equationName, recalibrated)
   );
-
-  useEffect(() => {
-    const chartDiv = divRef.current;
-    if (chartDiv) {
-      chartRef.current = new ApexCharts(chartDiv, chartOptions)
-    }
-  }, []);
-
-  useEffect(() => {
-    const chartDiv = divRef.current;
-    if (chartDiv) {
-      chartRef?.current?.updateOptions(chartOptions, true);
-      chartRef?.current?.render();
-    }
-  }, [chartOptions]);
+  const [seriesInfo, setSeriesInfo] = useState(
+    calculateSeries(damFailure, equationName, recalibrated)
+  );
 
   useEffect(() => {
     setChartOptions(
@@ -50,14 +37,22 @@ export default function ChartContainer({
         recalibrated
       )
     );
+
+    setSeriesInfo(calculateSeries(damFailure, equationName, recalibrated));
   }, [height, width, damFailure, equationName, recalibrated]);
 
-  return <div ref={divRef}></div>;
+  return (
+    <ReactApexChart
+      options={chartOptions}
+      series={[{ data: seriesInfo.equationResults }]}
+      type="line"
+      width={width}
+      height={height}
+    />
+  );
 }
 
-function updateChartProperties(
-  height: number,
-  width: number,
+function calculateSeries(
   damFailure: DamFailureInput,
   equationName: string,
   recalibrated: boolean
@@ -95,7 +90,7 @@ function updateChartProperties(
   const minH = heightOfWater / 2;
   const maxH = heightOfWater * 2;
   const predictionResult = empiricalEquation.predict(inputDam, recalibrated);
-  let equationResults = [];
+  let equationResults = [{ x: 0, y: 0 }];
   for (let i = 0; i < computedPoints; i++) {
     let x = minH + ((maxH - minH) * i) / computedPoints;
     equationResults.push({
@@ -108,16 +103,25 @@ function updateChartProperties(
       ),
     });
   }
-  const options = {
-    series: [
-      {
-        name: "Selected Equation",
-        data: equationResults,
-      },
-    ],
+
+  return {
+    equationResults: equationResults,
+    minH: minH,
+    maxH: maxH,
+    predictionResult: predictionResult,
+  };
+}
+
+function updateChartProperties(
+  height: number,
+  width: number,
+  damFailure: DamFailureInput,
+  equationName: string,
+  recalibrated: boolean
+) {
+  let seriesInfo = calculateSeries(damFailure, equationName, recalibrated);
+  const options: ApexOptions = {
     chart: {
-      height: height,
-      type: "line",
       zoom: { enabled: false },
       animations: {
         enabled: true,
@@ -140,8 +144,8 @@ function updateChartProperties(
         text: "Height of water (m)",
         style: { color: "#ffffff", fontSize: "14px" },
       },
-      min: minH,
-      max: maxH,
+      min: seriesInfo.minH,
+      max: seriesInfo.maxH,
       labels: { style: { colors: "#ffffff", fontSize: "14px" } },
     },
     yaxis: {
@@ -158,13 +162,17 @@ function updateChartProperties(
       decimalsInFloat: 1,
     },
     grid: { show: false },
+    tooltip: { enabled: false },
     annotations: {
       yaxis: [
         {
-          y: predictionResult,
+          y: seriesInfo.predictionResult,
           borderColor: "#ffffff",
           label: {
-            text: Number(predictionResult.toPrecision(2)).toLocaleString() + " m³/s",
+            text:
+              Number(
+                seriesInfo.predictionResult.toPrecision(2)
+              ).toLocaleString() + " m³/s",
             style: { fontSize: "14px" },
           },
         },

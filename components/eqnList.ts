@@ -28,8 +28,8 @@ overestimating the peak flow.",
     stdev: 0.4828,
     reMean: -0.0831,
     reStdev: 0.438,
-    func: (dam: DamFailure) => 0.607 * dam.v_w ** 0.295 * dam.h_w ** 1.24,
-    reFunc: (dam: DamFailure) => 0.04 * dam.v_w ** 0.46 * dam.h_w ** 1.11,
+    func: (dam: DamFailure) => 0.607 * dam.volumeOfWater ** 0.295 * dam.heightOfWater ** 1.24,
+    reFunc: (dam: DamFailure) => 0.04 * dam.volumeOfWater ** 0.46 * dam.heightOfWater ** 1.11,
   },
   "Webby (1996)-Q": {
     name: "Webby (1996)",
@@ -42,9 +42,9 @@ equation became the basis for subsequent models.",
     reMean: -0.0132,
     reStdev: 0.438,
     func: (dam: DamFailure) =>
-      0.0443 * 9.81 ** 0.5 * dam.v_w ** 0.365 * dam.h_w ** 1.4,
+      0.0443 * 9.81 ** 0.5 * dam.volumeOfWater ** 0.365 * dam.heightOfWater ** 1.4,
     reFunc: (dam: DamFailure) =>
-      0.015 * 9.81 ** 0.5 * dam.v_w ** 0.46 * dam.h_w ** 1.11,
+      0.015 * 9.81 ** 0.5 * dam.volumeOfWater ** 0.46 * dam.heightOfWater ** 1.11,
   },
   "Xu and Zhang (2009)-Q": {
     name: "Xu and Zhang (2009)",
@@ -63,7 +63,7 @@ accurately predicting the peak flow.",
       k_e = dam.erodibility === "low" ? 0.39 : k_e;
       const k_m = dam.mode === "overtopping" ? 1.56 : 1.0; // Mode factor
       return (
-        k_e * k_m * 0.024 * 9.81 ** 0.5 * dam.h_w ** 1.28 * dam.v_w ** 0.41
+        k_e * k_m * 0.024 * 9.81 ** 0.5 * dam.heightOfWater ** 1.28 * dam.volumeOfWater ** 0.41
       );
     },
     reFunc: (dam: DamFailure) => {
@@ -71,7 +71,7 @@ accurately predicting the peak flow.",
       let k_e = dam.erodibility === "low" ? 1.0 : 1.0;
       k_e = dam.erodibility === "high" ? 3.8 : k_e;
       return (
-        0.012 * k_m * k_e * 9.81 ** 0.5 * dam.h_w ** 1.11 * dam.v_w ** 0.46
+        0.012 * k_m * k_e * 9.81 ** 0.5 * dam.heightOfWater ** 1.11 * dam.volumeOfWater ** 0.46
       );
     },
   },
@@ -86,9 +86,9 @@ found that the effect of the copula on the model performance is negligible.",
     stdev: 0.4381,
     reMean: -0.0155,
     reStdev: 0.4382,
-    func: (dam: DamFailure) => 0.0454 * dam.h_w ** 1.156 * dam.v_w ** 0.448,
+    func: (dam: DamFailure) => 0.0454 * dam.heightOfWater ** 1.156 * dam.volumeOfWater ** 0.448,
     reFunc: (dam: DamFailure) =>
-      0.016 * 9.81 ** 0.5 * dam.v_w ** 0.45 * dam.h_w ** 1.14,
+      0.016 * 9.81 ** 0.5 * dam.volumeOfWater ** 0.45 * dam.heightOfWater ** 1.14,
   },
   "Azimi et al. (2015)-Q": {
     name: "Azimi et al. (2015)",
@@ -103,9 +103,9 @@ still produce large errors.",
     reMean: -0.0132,
     reStdev: 0.438,
     func: (dam: DamFailure) =>
-      16.553 * ((9.81 * dam.v_w) / 1000000) ** 0.5 * dam.h_w,
+      16.553 * ((9.81 * dam.volumeOfWater) / 1000000) ** 0.5 * dam.heightOfWater,
     reFunc: (dam: DamFailure) =>
-      0.015 * 9.81 ** 0.5 * dam.v_w ** 0.46 * dam.h_w ** 1.11,
+      0.015 * 9.81 ** 0.5 * dam.volumeOfWater ** 0.46 * dam.heightOfWater ** 1.11,
   },
   "Froehlich (2016)-Q": {
     name: "Froehlich (2016)",
@@ -122,26 +122,26 @@ improved the model performance compared to simpler models.",
     reStdev: 0.4274,
     func: (dam: DamFailure) => {
       const k_m = dam.mode === "overtopping" ? 1.85 : 1;
-      const k_h = dam.h_w >= 6.1 ? (dam.h_w / 6.1) ** (1 / 8.0) : 1.0;
+      const k_h = dam.heightOfWater >= 6.1 ? (dam.heightOfWater / 6.1) ** (1 / 8.0) : 1.0;
       return (
         0.0175 *
         k_m *
         k_h *
-        ((9.81 * dam.v_w * dam.h_w * dam.h_b ** 2) / dam.w_avg) ** 0.5
+        ((9.81 * dam.volumeOfWater * dam.heightOfWater * dam.depthOfBreach ** 2) / dam.averageWidth) ** 0.5
       );
     },
     reFunc: (dam: DamFailure) => {
       const k_m = dam.mode === "overtopping" ? 1.01 : 1;
-      const k_h = dam.h_w >= 4.6 ? (dam.h_w / 4.6) ** 0.2 : 1.0; // should be h_b
+      const k_h = dam.heightOfWater >= 4.6 ? (dam.heightOfWater / 4.6) ** 0.2 : 1.0; // should be h_b
       return (
         0.012 *
         9.81 ** 0.5 *
         k_m *
         k_h *
-        dam.h_w ** 0.31 *
-        dam.v_w ** 0.46 *
-        dam.h_b ** 0.76 *
-        dam.w_avg ** 0.067
+        dam.heightOfWater ** 0.31 *
+        dam.volumeOfWater ** 0.46 *
+        dam.depthOfBreach ** 0.76 *
+        dam.averageWidth ** 0.067
       );
     },
   },
@@ -163,11 +163,11 @@ compared to simpler models (Yassin et al., 2025).",
           : [-1.58, -0.76, 0.1, -4.55];
       return (
         9.81 ** 0.5 *
-        dam.v_w *
-        dam.h_w ** -0.5 *
-        (dam.v_w ** (1 / 3) / dam.h_w) ** c[0] *
-        (dam.h_w / dam.h_b) ** c[1] *
-        dam.h_d ** c[2] *
+        dam.volumeOfWater *
+        dam.heightOfWater ** -0.5 *
+        (dam.volumeOfWater ** (1 / 3) / dam.heightOfWater) ** c[0] *
+        (dam.heightOfWater / dam.depthOfBreach) ** c[1] *
+        dam.heightOfDam ** c[2] *
         Math.exp(c[3])
       );
     },
@@ -179,10 +179,10 @@ compared to simpler models (Yassin et al., 2025).",
       return (
         c[0] *
         9.81 ** 0.5 *
-        dam.h_w ** c[1] *
-        dam.v_w ** c[2] *
-        dam.h_b ** c[3] *
-        dam.h_d ** c[4]
+        dam.heightOfWater ** c[1] *
+        dam.volumeOfWater ** c[2] *
+        dam.depthOfBreach ** c[3] *
+        dam.heightOfDam ** c[4]
       );
     },
   },
@@ -198,12 +198,12 @@ accurate of the models, but it is still prone to large errors in some cases.",
     reStdev: 0.3635,
     func: (dam: DamFailure) => {
       const k_e = dam.erodibility === "high" ? 3.8 : 1.0; // Erodibility factor
-      return 0.011 * k_e * 9.81 ** 0.5 * dam.h_w ** 1.11 * dam.v_w ** 0.46;
+      return 0.011 * k_e * 9.81 ** 0.5 * dam.heightOfWater ** 1.11 * dam.volumeOfWater ** 0.46;
     },
     reFunc: (dam: DamFailure) => {
       // same as above
       const k_e = dam.erodibility === "high" ? 3.8 : 1.0; // Erodibility factor
-      return 0.011 * k_e * 9.81 ** 0.5 * dam.h_w ** 1.11 * dam.v_w ** 0.46;
+      return 0.011 * k_e * 9.81 ** 0.5 * dam.heightOfWater ** 1.11 * dam.volumeOfWater ** 0.46;
     },
   },
 
@@ -217,8 +217,8 @@ accurate of the models, but it is still prone to large errors in some cases.",
     reMean: -0.0079,
     reStdev: 0.3235,
     func: (dam: DamFailure) =>
-      3.84 * (dam.v_w / 10 ** 6) ** 0.53 * dam.h_b ** -0.9,
-    reFunc: (dam: DamFailure) => 0.026 * dam.v_w ** 0.37 * dam.h_b ** -0.78,
+      3.84 * (dam.volumeOfWater / 10 ** 6) ** 0.53 * dam.depthOfBreach ** -0.9,
+    reFunc: (dam: DamFailure) => 0.026 * dam.volumeOfWater ** 0.37 * dam.depthOfBreach ** -0.78,
   },
   "Froehlich (2008)-T": {
     name: "Froehlich (2008)",
@@ -228,9 +228,9 @@ accurate of the models, but it is still prone to large errors in some cases.",
     reMean: -0.0185,
     reStdev: 0.3273,
     func: (dam: DamFailure) =>
-      (63.2 * (dam.v_w / 9.81 / dam.h_b ** 2) ** 0.5) / 3600,
+      (63.2 * (dam.volumeOfWater / 9.81 / dam.depthOfBreach ** 2) ** 0.5) / 3600,
     reFunc: (dam: DamFailure) =>
-      0.045 * 9.81 ** -0.5 * dam.v_w ** 0.39 * dam.h_b ** -0.68,
+      0.045 * 9.81 ** -0.5 * dam.volumeOfWater ** 0.39 * dam.depthOfBreach ** -0.68,
   },
   "Xu and Zhang (2009)-T": {
     name: "Xu and Zhang (2009)",
@@ -243,13 +243,13 @@ accurate of the models, but it is still prone to large errors in some cases.",
       let k_e = dam.erodibility === "high" ? 0.58 : 1.0; // Erodibility factor
       k_e = dam.erodibility === "low" ? 3.11 : k_e;
       return (
-        0.01122 * k_e * dam.h_d ** 0.654 * dam.v_w ** 0.415 * dam.h_w ** -1.246
+        0.01122 * k_e * dam.heightOfDam ** 0.654 * dam.volumeOfWater ** 0.415 * dam.heightOfWater ** -1.246
       );
     },
     reFunc: (dam: DamFailure) => {
       let k_e = dam.erodibility === "high" ? 0.78 : 1.0; // Erodibility factor
       k_e = dam.erodibility === "low" ? 3.3 : k_e;
-      return 0.043 * k_e * dam.h_d ** 0.35 * dam.v_w ** 0.29 * dam.h_w ** -0.86;
+      return 0.043 * k_e * dam.heightOfDam ** 0.35 * dam.volumeOfWater ** 0.29 * dam.heightOfWater ** -0.86;
     },
   },
   "Zhong et al. (2020)-T": {
@@ -265,9 +265,9 @@ accurate of the models, but it is still prone to large errors in some cases.",
           ? [1.52, -11.36, -0.43, Math.exp(-1.57)]
           : [0.56, -0.85, -0.32, Math.exp(-0.2)];
       return (
-        (dam.v_w ** (1 / 3) / dam.h_w) ** c[0] *
-        (dam.h_w / dam.h_b) ** c[1] *
-        dam.h_d ** c[2] *
+        (dam.volumeOfWater ** (1 / 3) / dam.heightOfWater) ** c[0] *
+        (dam.heightOfWater / dam.depthOfBreach) ** c[1] *
+        dam.heightOfDam ** c[2] *
         c[3]
       );
     },
@@ -278,10 +278,10 @@ accurate of the models, but it is still prone to large errors in some cases.",
           : [0.025, 0.36, -0.22, 0.4, 0.4];
       return (
         c[0] *
-        dam.v_w ** c[1] *
-        dam.h_w ** c[2] *
-        dam.h_b ** c[3] *
-        dam.h_d ** c[4]
+        dam.volumeOfWater ** c[1] *
+        dam.heightOfWater ** c[2] *
+        dam.depthOfBreach ** c[3] *
+        dam.heightOfDam ** c[4]
       );
     },
   },

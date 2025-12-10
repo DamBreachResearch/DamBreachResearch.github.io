@@ -5,7 +5,7 @@ import {
   PeakFlowEquation,
   TimeToFailureEquation,
 } from "./empiricalEqn";
-import { timeStringFormat } from "./utils/formatting";
+import { timeStringFormat } from "./formatting";
 
 interface ResultContainerInputs {
   damFailure: DamFailureInput;
@@ -49,11 +49,11 @@ export function ResultContainer({
   }
 
   const inputDam: DamFailure = {
-    h_w: h_w,
-    v_w: v_w,
-    h_d: h_d,
-    h_b: h_b,
-    w_avg: w_avg,
+    heightOfWater: h_w,
+    volumeOfWater: v_w,
+    heightOfDam: h_d,
+    depthOfBreach: h_b,
+    averageWidth: w_avg,
     erodibility: damFailure.erodibility,
     mode: damFailure.failureMode,
     type: damFailure.damType,

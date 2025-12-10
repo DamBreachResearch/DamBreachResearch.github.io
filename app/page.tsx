@@ -3,14 +3,14 @@
 import { DamDescriptionContainer } from "@/components/descriptionInputs";
 import { NumericalInputContainer } from "@/components/numericalInputs";
 import { ResultContainer } from "@/components/results";
-import DamSchematic from "@/components/schematic";
+import DamSchematic from "@/components/graphics/schematic";
 import Image from "next/image";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { PeakFlowEquation } from "@/components/empiricalEqn";
 
 const ChartContainer = dynamic(
-  () => import("@/components/utils/chartContainer"),
+  () => import("@/components/graphics/chartContainer"),
   { ssr: false }
 );
 

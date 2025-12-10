@@ -10,10 +10,8 @@
   },
   "dependencies": {
     "apexcharts": "^5.3.6",
-    "chart.js": "^4.5.1",
     "next": "^16.0.7",
     "react": "19.2.0",
-    "react-apexcharts": "^1.9.0",
     "react-dom": "19.2.0"
   },
   "devDependencies": {
@@ -24,7 +22,6 @@
     "baseline-browser-mapping": "^2.9.0",
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
-    "rollup": "^4.53.2",
     "tailwindcss": "^4.1.17",
     "typescript": "^5"
   }

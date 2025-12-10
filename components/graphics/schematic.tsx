@@ -1,5 +1,5 @@
-import { DamFailureInput } from "./empiricalEqn";
-import Canvas from "./utils/canvas";
+import { DamFailureInput } from "../empiricalEqn";
+import Canvas from "./canvas";
 
 export default function DamSchematic({
   damFailure,

@@ -1,11 +1,11 @@
 import { EquationList, type EqnListItem } from "./eqnList";
 
 export interface DamFailure {
-  v_w: number;
-  h_w: number;
-  h_d: number;
-  h_b: number;
-  w_avg: number;
+  volumeOfWater: number;
+  heightOfWater: number;
+  heightOfDam: number;
+  depthOfBreach: number;
+  averageWidth: number;
   erodibility: string;
   mode: string;
   type: string;

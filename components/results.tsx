@@ -1,4 +1,5 @@
 import {
+  convertDamInputToFailure,
   DamFailure,
   DamFailureInput,
   EquationState,
@@ -8,27 +9,32 @@ import {
 import { timeStringFormat } from "./formatting";
 
 interface ResultContainerInputs {
-  damFailure: DamFailureInput;
+  damInput: DamFailureInput;
   equationState: EquationState;
 }
 
 export function ResultContainer({
-  damFailure,
-  equationState
+  damInput,
+  equationState,
 }: ResultContainerInputs) {
-  const peakFlowEquation = new PeakFlowEquation(equationState.peakFlowEquationName);
+  const peakFlowEquation = new PeakFlowEquation(
+    equationState.peakFlowEquationName
+  );
   const timeToFailureEquation = new TimeToFailureEquation(
     equationState.timeToFailureEquationName
   );
-  const h_w = Number(damFailure.heightOfWater?.replace(/,/g, ""));
-  const v_w = Number(damFailure.volumeOfWater?.replace(/,/g, ""));
-  let h_b = Number(damFailure.depthOfBreach?.replace(/,/g, ""));
-  let h_d = Number(damFailure.heightOfDam?.replace(/,/g, ""));
-  let w_avg = Number(damFailure.averageWidth?.replace(/,/g, ""));
-  const useRecalibratedQ = equationState.peakFlowEquationType === "recalibrated";
-  const useRecalibratedT = equationState.timeToFailureEquationType === "recalibrated";
+  const hasHeightOfWater = damInput.heightOfWater?.replace(/,/g, "")
+    ? true
+    : false;
+  const hasVolumeOfWater = damInput.volumeOfWater?.replace(/,/g, "")
+    ? true
+    : false;
+  const useRecalibratedQ =
+    equationState.peakFlowEquationType === "recalibrated";
+  const useRecalibratedT =
+    equationState.timeToFailureEquationType === "recalibrated";
 
-  if (!h_w || !v_w) {
+  if (!hasHeightOfWater || !hasVolumeOfWater) {
     return (
       <div className="result-container text-center border-1 border-white rounded-xl p-5 place-content-center text-orange-600 text-2xl">
         There&apos;s a problem with the input.
@@ -36,31 +42,10 @@ export function ResultContainer({
     );
   }
 
-  if (!h_b) {
-    h_b = h_w;
-  }
-
-  if (!h_d) {
-    h_d = h_w;
-  }
-
-  if (!w_avg) {
-    w_avg = h_d * 2.6;
-  }
-
-  const inputDam: DamFailure = {
-    heightOfWater: h_w,
-    volumeOfWater: v_w,
-    heightOfDam: h_d,
-    depthOfBreach: h_b,
-    averageWidth: w_avg,
-    erodibility: damFailure.erodibility,
-    mode: damFailure.failureMode,
-    type: damFailure.damType,
-  };
+  const damFailure = convertDamInputToFailure(damInput);
 
   const peakFlowPrediction = peakFlowEquation.predict(
-    inputDam,
+    damFailure,
     useRecalibratedQ
   );
   const peakFlowUpperBound =
@@ -74,7 +59,7 @@ export function ResultContainer({
   ).toLocaleString();
 
   const timeToFailurePrediction = timeToFailureEquation.predict(
-    inputDam,
+    damFailure,
     useRecalibratedT
   );
   const timeToFailureUpperBound = timeStringFormat(

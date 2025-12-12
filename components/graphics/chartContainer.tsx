@@ -2,44 +2,40 @@ import ApexCharts, { ApexOptions } from "apexcharts";
 import { useEffect, useRef, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import {
+  convertDamInputToFailure,
   DamFailure,
   DamFailureInput,
   EmpiricalEquation,
 } from "../empiricalEqn";
+import { equationList } from "../eqnList";
 
 export default function ChartContainer({
   height,
   width,
-  damFailure,
-  equationName,
+  damInput,
+  selectedEquation,
   recalibrated,
 }: {
   height: number;
   width: number;
-  damFailure: DamFailureInput;
-  equationName: string;
+  damInput: DamFailureInput;
+  selectedEquation: string;
   recalibrated: boolean;
 }) {
   const [chartOptions, setChartOptions] = useState(
-    updateChartProperties(height, width, damFailure, equationName, recalibrated)
+    updateChartProperties(damInput, selectedEquation, recalibrated)
   );
   const [seriesInfo, setSeriesInfo] = useState(
-    calculateSeries(damFailure, equationName, recalibrated)
+    calculateSeries(damInput, selectedEquation, recalibrated)
   );
 
   useEffect(() => {
     setChartOptions(
-      updateChartProperties(
-        height,
-        width,
-        damFailure,
-        equationName,
-        recalibrated
-      )
+      updateChartProperties(damInput, selectedEquation, recalibrated)
     );
 
-    setSeriesInfo(calculateSeries(damFailure, equationName, recalibrated));
-  }, [height, width, damFailure, equationName, recalibrated]);
+    setSeriesInfo(calculateSeries(damInput, selectedEquation, recalibrated));
+  }, [height, width, damInput, selectedEquation, recalibrated]);
 
   return (
     <ReactApexChart
@@ -53,51 +49,26 @@ export default function ChartContainer({
 }
 
 function calculateSeries(
-  damFailure: DamFailureInput,
-  equationName: string,
+  damInput: DamFailureInput,
+  selectedEquation: string,
   recalibrated: boolean
 ) {
-  const empiricalEquation = new EmpiricalEquation(equationName);
+  const empiricalEquation = new EmpiricalEquation(selectedEquation);
   const computedPoints = 100;
 
-  const heightOfWater = Number(damFailure.heightOfWater?.replace(/,/g, ""));
-  const volumeOfWater = Number(damFailure.volumeOfWater?.replace(/,/g, ""));
-  let depthOfBreach = Number(damFailure.depthOfBreach?.replace(/,/g, ""));
-  let heightOfDam = Number(damFailure.heightOfDam?.replace(/,/g, ""));
-  let averageWidth = Number(damFailure.averageWidth?.replace(/,/g, ""));
-  if (!depthOfBreach) {
-    depthOfBreach = heightOfWater;
-  }
-  if (!heightOfDam) {
-    heightOfDam = heightOfWater;
-  }
+  const damFailure: DamFailure = convertDamInputToFailure(damInput);
 
-  if (!averageWidth) {
-    averageWidth = heightOfDam * 2.6;
-  }
-
-  const inputDam: DamFailure = {
-    heightOfWater: heightOfWater,
-    volumeOfWater: volumeOfWater,
-    heightOfDam: heightOfDam,
-    depthOfBreach: depthOfBreach,
-    averageWidth: averageWidth,
-    erodibility: damFailure.erodibility,
-    mode: damFailure.failureMode,
-    type: damFailure.damType,
-  };
-
-  const minH = heightOfWater / 2;
-  const maxH = heightOfWater * 2;
-  const predictionResult = empiricalEquation.predict(inputDam, recalibrated);
-  let equationResults = [{ x: 0, y: 0 }];
+  const minVolume = damFailure.volumeOfWater / 2;
+  const maxVolume = damFailure.volumeOfWater * 2;
+  const predictionResult = empiricalEquation.predict(damFailure, recalibrated);
+  let equationResults: { x: number; y: number }[] = [];
   for (let i = 0; i < computedPoints; i++) {
-    let x = minH + ((maxH - minH) * i) / computedPoints;
+    let x = minVolume + ((maxVolume - minVolume) * i) / computedPoints;
     equationResults.push({
       x: x,
       y: Number(
         empiricalEquation.predict(
-          { ...inputDam, heightOfWater: x },
+          { ...damFailure, volumeOfWater: x },
           recalibrated
         )
       ),
@@ -106,20 +77,38 @@ function calculateSeries(
 
   return {
     equationResults: equationResults,
-    minH: minH,
-    maxH: maxH,
+    minVolume: minVolume,
+    maxVolume: maxVolume,
     predictionResult: predictionResult,
   };
 }
 
+function calculateAllSeries(
+  damInput: DamFailureInput,
+  selectedEquation: string
+) {
+  const damFailure: DamFailure = convertDamInputToFailure(damInput);
+  const allEquationResults: {
+    name: string;
+    data: { x: number; y: number }[];
+  }[] = [];
+  const equationType = selectedEquation?.slice(-1); // Q or T or B
+  for (let equationName in equationList) {
+    if (equationName.slice(-1) === equationType) {
+      let listedName =
+        equationName === selectedEquation ? equationName : "Other";
+      allEquationResults.push({ name: listedName, data: [] });
+      // allEquationResults[-1];
+    }
+  }
+}
+
 function updateChartProperties(
-  height: number,
-  width: number,
-  damFailure: DamFailureInput,
+  damInput: DamFailureInput,
   equationName: string,
   recalibrated: boolean
 ) {
-  let seriesInfo = calculateSeries(damFailure, equationName, recalibrated);
+  let seriesInfo = calculateSeries(damInput, equationName, recalibrated);
   const options: ApexOptions = {
     chart: {
       zoom: { enabled: false },
@@ -141,11 +130,11 @@ function updateChartProperties(
       type: "numeric",
       axisBorder: { color: "#ffffff" },
       title: {
-        text: "Height of water (m)",
+        text: "Volume of water (m³)",
         style: { color: "#ffffff", fontSize: "14px" },
       },
-      min: seriesInfo.minH,
-      max: seriesInfo.maxH,
+      min: seriesInfo.minVolume,
+      max: seriesInfo.maxVolume,
       labels: { style: { colors: "#ffffff", fontSize: "14px" } },
     },
     yaxis: {
@@ -157,7 +146,7 @@ function updateChartProperties(
       },
       labels: { style: { colors: "#ffffff", fontSize: "14px" } },
       tickAmount: 11,
-      logarithmic: true,
+      logarithmic: false,
       forceNiceScale: true,
       decimalsInFloat: 1,
     },
@@ -179,7 +168,7 @@ function updateChartProperties(
       ],
       xaxis: [
         {
-          x: damFailure.heightOfWater,
+          x: damInput.heightOfWater,
           borderColor: "#ffffff",
         },
       ],

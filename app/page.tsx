@@ -36,7 +36,7 @@ function ToolContainer() {
   return (
     <div className="rounded-xl mx-auto bg-slate-900 max-w-9/10 p-4">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-5 place-content-center">
-        <DamSchematic damFailure={damFailure} canvasSize={canvasSize} />
+        <DamSchematic damInput={damFailure} canvasSize={canvasSize} />
         <DamDescriptionContainer
           damFailure={damFailure}
           setDamFailure={setDamFailure}
@@ -49,13 +49,13 @@ function ToolContainer() {
         />
         <ResultContainer
           equationState={equationState}
-          damFailure={damFailure}
+          damInput={damFailure}
         />
         <ChartContainer
           height={384}
           width={320}
-          damFailure={damFailure}
-          equationName={equationState.peakFlowEquationName + "-Q"}
+          damInput={damFailure}
+          selectedEquation={equationState.peakFlowEquationName + "-Q"}
           recalibrated={equationState.peakFlowEquationType === "recalibrated"}
         />
       </div>

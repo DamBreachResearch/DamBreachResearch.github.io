@@ -1,6 +1,6 @@
-import { DamFailure, Estimate } from "./empiricalEqn.js";
+import { DamFailure } from "./empiricalEqn.js";
 
-export { EquationList, type EqnListItem };
+export { equationList, type EqnListItem };
 
 type EqnListItem = {
   name: string;
@@ -9,15 +9,15 @@ type EqnListItem = {
   stdev: number;
   reMean: number;
   reStdev: number;
-  func: Estimate;
-  reFunc: Estimate;
+  func: (dam: DamFailure) => number;
+  reFunc: (dam: DamFailure) => number;
 };
 
-interface EqnList {
+interface EquationList {
   [key: string]: EqnListItem;
 }
 
-const EquationList: EqnList = {
+const equationList: EquationList = {
   "Froehlich (1995a)-Q": {
     name: "Froehlich (1995a)",
     description:

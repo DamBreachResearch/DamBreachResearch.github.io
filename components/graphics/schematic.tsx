@@ -1,41 +1,27 @@
-import { DamFailureInput } from "../empiricalEqn";
+import {
+  convertDamInputToFailure,
+  DamFailure,
+  DamFailureInput,
+} from "../empiricalEqn";
 import Canvas from "./canvas";
 
 export default function DamSchematic({
-  damFailure,
+  damInput: damInput,
   canvasSize,
 }: {
-  damFailure: DamFailureInput;
+  damInput: DamFailureInput;
   canvasSize: { width: number; height: number };
 }) {
   const draw = (ctx: CanvasRenderingContext2D) => {
-    let h_w = Number(damFailure.heightOfWater?.replace(/,/g, ""));
-    let h_b = Number(damFailure.depthOfBreach?.replace(/,/g, ""));
-    let h_d = Number(damFailure.heightOfDam?.replace(/,/g, ""));
-    let w_avg = Number(damFailure.averageWidth?.replace(/,/g, ""));
-
-    let assumedHb = false;
-    let assumedHd = false;
-    let assumedWavg = false;
-
-    if (!h_w) {
-      h_w = 1;
-    }
-
-    if (!h_d) {
-      h_d = h_b ? h_b : h_w;
-      assumedHd = true;
-    }
-
-    if (!h_b) {
-      h_b = h_d;
-      assumedHb = true;
-    }
-
-    if (!w_avg) {
-      w_avg = h_d * 2.6;
-      assumedWavg = true;
-    }
+    const damFailure: DamFailure = convertDamInputToFailure(damInput);
+    
+    let heightOfWater = damFailure.heightOfWater;
+    let depthOfBreach = damFailure.depthOfBreach;
+    let heightOfDam = damFailure.heightOfDam;
+    let averageWidth = damFailure.averageWidth;
+    let assumedBreachDepth = damInput.depthOfBreach?.replace(/,/g, "") ? false : true;
+    let assumedDamHeight = damInput.heightOfDam?.replace(/,/g, "") ? false : true;
+    let assumedDamWidth = damInput.averageWidth?.replace(/,/g, "") ? false : true;
 
     if (ctx) {
       const wMax = ctx.canvas.width;
@@ -43,8 +29,11 @@ export default function DamSchematic({
       const verticalExaggeration = 1;
 
       // Calculate maximum unit sizes for the figure
-      let hBUnitLimit = ((hMax / 4) * h_d) / (h_b - h_d);
-      let hWUnitLimit = (((3 / 4) * hMax - 16) * h_d) / (h_d - h_b + h_w);
+      let hBUnitLimit =
+        ((hMax / 4) * heightOfDam) / (depthOfBreach - heightOfDam);
+      let hWUnitLimit =
+        (((3 / 4) * hMax - 16) * heightOfDam) /
+        (heightOfDam - depthOfBreach + heightOfWater);
       // Ensure non-negative upper limits
       hBUnitLimit = hBUnitLimit > 0 ? hBUnitLimit : Infinity;
       hWUnitLimit = hWUnitLimit > 0 ? hWUnitLimit : Infinity;
@@ -53,21 +42,23 @@ export default function DamSchematic({
         (1 / 2) * hMax,
         hBUnitLimit,
         hWUnitLimit,
-        ((wMax / 2 - 30) * 8 * h_d * verticalExaggeration) /
-          (3 * h_d * verticalExaggeration + 8 * w_avg)
+        ((wMax / 2 - 30) * 8 * heightOfDam * verticalExaggeration) /
+          (3 * heightOfDam * verticalExaggeration + 8 * averageWidth)
       );
 
       // Set up dam dimensions based on "unit" length, defined above
       const wCrest =
-        w_avg > (h_d * 3) / 4 ? (unit * 3) / 4 : (w_avg / h_d) * unit;
+        averageWidth > (heightOfDam * 3) / 4
+          ? (unit * 3) / 4
+          : (averageWidth / heightOfDam) * unit;
 
       const baseY = (hMax * 3) / 4;
       const crestY = baseY - unit;
-      const breachY = crestY + (h_b / h_d) * unit;
-      const waterY = breachY - (h_w / h_d) * unit;
+      const breachY = crestY + (depthOfBreach / heightOfDam) * unit;
+      const waterY = breachY - (heightOfWater / heightOfDam) * unit;
       const leftCrestX = wMax / 2 - wCrest / 2;
       const rightCrestX = wMax / 2 + wCrest / 2;
-      const slope = ((w_avg / h_d) * unit - wCrest) / unit;
+      const slope = ((averageWidth / heightOfDam) * unit - wCrest) / unit;
       const leftToeX = leftCrestX - (unit * slope) / verticalExaggeration;
       const rightToeX = rightCrestX + (unit * slope) / verticalExaggeration;
 
@@ -142,35 +133,55 @@ export default function DamSchematic({
       // Add dimensions
       ctx.lineWidth = 2;
       ctx.strokeStyle = "white";
-      if (!assumedHd) {
-        drawDimension(ctx, h_d, 30, baseY, 30, crestY, [9, 0], assumedHd, true);
-      }
-
-      if (!assumedHb) {
+      if (!assumedDamHeight) {
         drawDimension(
           ctx,
-          h_b,
+          heightOfDam,
+          30,
+          baseY,
+          30,
+          crestY,
+          [9, 0],
+          assumedDamHeight,
+          true
+        );
+      }
+
+      if (!assumedBreachDepth) {
+        drawDimension(
+          ctx,
+          depthOfBreach,
           10,
           breachY,
           10,
           crestY,
           [9, 0],
-          assumedHb,
+          assumedBreachDepth,
           true
         );
       }
 
-      drawDimension(ctx, h_w, 50, breachY, 50, waterY, [9, 0], false, true);
+      drawDimension(
+        ctx,
+        heightOfWater,
+        50,
+        breachY,
+        50,
+        waterY,
+        [9, 0],
+        false,
+        true
+      );
 
       drawDimension(
         ctx,
-        assumedWavg ? Math.round(w_avg) : w_avg,
+        assumedDamWidth ? Math.round(averageWidth) : averageWidth,
         (leftToeX + leftCrestX) / 2,
         hMax - (1 / 4) * unit,
         (rightToeX + rightCrestX) / 2,
         hMax - (1 / 4) * unit,
         [0, -9],
-        assumedWavg
+        assumedDamWidth
       );
 
       // leader lines from width dimension
@@ -193,9 +204,7 @@ export default function DamSchematic({
       width={canvasSize.width}
       height={canvasSize.height}
       draw={draw}
-      dependencyArray={[
-        damFailure,
-      ]}
+      dependencyArray={[damInput]}
     />
   );
 }

@@ -26,7 +26,8 @@ export default function ChartContainer({
     updateChartProperties(damInput, selectedEquation, recalibrated)
   );
   const [seriesInfo, setSeriesInfo] = useState(
-    calculateSeries(damInput, selectedEquation, recalibrated)
+    // calculateSeries(damInput, selectedEquation, recalibrated)
+    calculateAllSeries(damInput, selectedEquation, recalibrated)
   );
 
   useEffect(() => {
@@ -34,13 +35,14 @@ export default function ChartContainer({
       updateChartProperties(damInput, selectedEquation, recalibrated)
     );
 
-    setSeriesInfo(calculateSeries(damInput, selectedEquation, recalibrated));
+    // setSeriesInfo(calculateSeries(damInput, selectedEquation, recalibrated));
+    setSeriesInfo(calculateAllSeries(damInput, selectedEquation, recalibrated));
   }, [height, width, damInput, selectedEquation, recalibrated]);
 
   return (
     <ReactApexChart
       options={chartOptions}
-      series={[{ data: seriesInfo.equationResults }]}
+      series={seriesInfo}
       type="line"
       width={width}
       height={height}
@@ -85,9 +87,9 @@ function calculateSeries(
 
 function calculateAllSeries(
   damInput: DamFailureInput,
-  selectedEquation: string
+  selectedEquation: string,
+  recalibrated: boolean
 ) {
-  const damFailure: DamFailure = convertDamInputToFailure(damInput);
   const allEquationResults: {
     name: string;
     data: { x: number; y: number }[];
@@ -95,12 +97,18 @@ function calculateAllSeries(
   const equationType = selectedEquation?.slice(-1); // Q or T or B
   for (let equationName in equationList) {
     if (equationName.slice(-1) === equationType) {
-      let listedName =
-        equationName === selectedEquation ? equationName : "Other";
-      allEquationResults.push({ name: listedName, data: [] });
-      // allEquationResults[-1];
+      let equationResults = calculateSeries(damInput, equationName, recalibrated).equationResults;
+      if (equationName === selectedEquation) {
+        allEquationResults.unshift({
+          name: selectedEquation,
+          data: equationResults,
+        });
+      } else {
+        allEquationResults.push({ name: "Other", data: equationResults });
+      }
     }
   }
+  return allEquationResults;
 }
 
 function updateChartProperties(
@@ -109,23 +117,42 @@ function updateChartProperties(
   recalibrated: boolean
 ) {
   let seriesInfo = calculateSeries(damInput, equationName, recalibrated);
+  let chartTitle = "Unknown";
+  let units = "";
+  if (equationName.slice(-1) === 'Q') {
+    chartTitle = "Peak flow"
+    units = "m³/s"
+  } else if (equationName.slice(-1) === 'T') {
+    chartTitle = "Time to failure"
+    units = "h"
+  }
   const options: ApexOptions = {
     chart: {
       zoom: { enabled: false },
       animations: {
-        enabled: true,
+        enabled: false,
         speed: 800,
-        dynamicAnimation: { enabled: true, speed: 800 },
+        dynamicAnimation: { enabled: false, speed: 800 },
       },
     },
-    colors: ["#ff6900"],
+    colors: [
+      "#ff6900",
+      "#999999",
+      "#999999",
+      "#999999",
+      "#999999",
+      "#999999",
+      "#999999",
+      "#999999",
+    ],
     dataLabels: { enabled: false },
     stroke: { curve: "straight", width: 2 },
     title: {
-      text: "Predicted peak flow",
+      text: "Predicted " + chartTitle.toLowerCase(),
       align: "center",
       style: { color: "#ffffff", fontSize: "24px" },
     },
+    legend: {customLegendItems: [equationName, "Other"]},
     xaxis: {
       type: "numeric",
       axisBorder: { color: "#ffffff" },
@@ -141,11 +168,10 @@ function updateChartProperties(
       axisBorder: { show: true, color: "#ffffff" },
       axisTicks: { show: true, color: "#ffffff", width: 6 },
       title: {
-        text: "Peak flow, m³/s",
+        text: chartTitle + " (" + units + ")",
         style: { color: "#ffffff", fontSize: "14px" },
       },
       labels: { style: { colors: "#ffffff", fontSize: "14px" } },
-      tickAmount: 11,
       logarithmic: false,
       forceNiceScale: true,
       decimalsInFloat: 1,
@@ -161,14 +187,14 @@ function updateChartProperties(
             text:
               Number(
                 seriesInfo.predictionResult.toPrecision(2)
-              ).toLocaleString() + " m³/s",
+              ).toLocaleString() + " " + units,
             style: { fontSize: "14px" },
           },
         },
       ],
       xaxis: [
         {
-          x: damInput.heightOfWater,
+          x: damInput.volumeOfWater,
           borderColor: "#ffffff",
         },
       ],

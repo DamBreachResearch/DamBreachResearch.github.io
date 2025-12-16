@@ -58,6 +58,13 @@ function ToolContainer() {
           selectedEquation={equationState.peakFlowEquationName + "-Q"}
           recalibrated={equationState.peakFlowEquationType === "recalibrated"}
         />
+        <ChartContainer
+          height={384}
+          width={320}
+          damInput={damFailure}
+          selectedEquation={equationState.timeToFailureEquationName + "-T"}
+          recalibrated={equationState.timeToFailureEquationType === "recalibrated"}
+        />
       </div>
     </div>
   );

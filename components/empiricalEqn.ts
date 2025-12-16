@@ -1,11 +1,11 @@
-import { EquationList, type EqnListItem } from "./eqnList";
+import { equationList, type EqnListItem } from "./eqnList";
 
 export interface DamFailure {
-  v_w: number;
-  h_w: number;
-  h_d: number;
-  h_b: number;
-  w_avg: number;
+  volumeOfWater: number;
+  heightOfWater: number;
+  heightOfDam: number;
+  depthOfBreach: number;
+  averageWidth: number;
   erodibility: string;
   mode: string;
   type: string;
@@ -29,9 +29,7 @@ export interface EquationState {
   timeToFailureEquationType: string;
 }
 
-export type Estimate = (dam: DamFailure) => number;
-
-class EmpiricalEquation {
+export class EmpiricalEquation {
   shortName: string;
   name: string;
   description: string;
@@ -39,11 +37,11 @@ class EmpiricalEquation {
   stdev: number;
   reMean: number;
   reStdev: number;
-  ogPredict: Estimate;
-  rePredict: Estimate;
+  ogPredict: (dam: DamFailure) => number;
+  rePredict: (dam: DamFailure) => number;
 
   constructor(shortName: string) {
-    const eqn: EqnListItem = EquationList[shortName];
+    const eqn: EqnListItem = equationList[shortName];
     this.shortName = shortName;
     this.name = eqn.name;
     this.description = eqn.description;
@@ -58,7 +56,7 @@ class EmpiricalEquation {
     this.rePredict = eqn.reFunc;
   }
 
-  getUpperBoundRatio(useRecalibrated: boolean) {
+  getUpperBoundRatio(useRecalibrated: boolean): number {
     // Note: the mean is negative because these means are pred/obs and we want obs/pred
     if (useRecalibrated) {
       return 10 ** (-1 * this.reMean + 1.645 * this.reStdev); // one-sided 95% confidence interval
@@ -67,7 +65,7 @@ class EmpiricalEquation {
     }
   }
 
-  getLowerBoundRatio(useRecalibrated: boolean) {
+  getLowerBoundRatio(useRecalibrated: boolean): number {
     // Note: the mean is negative because these means are pred/obs and we want obs/pred
     if (useRecalibrated) {
       return 10 ** (-1 * this.reMean - 1.645 * this.reStdev); // one-sided 95% confidence interval
@@ -76,7 +74,7 @@ class EmpiricalEquation {
     }
   }
 
-  predict(dam: DamFailure, useRecalibrated: boolean) {
+  predict(dam: DamFailure, useRecalibrated: boolean): number {
     if (useRecalibrated) {
       return this.rePredict(dam);
     } else {
@@ -106,18 +104,34 @@ export class BreachWidthEquation extends EmpiricalEquation {
   }
 }
 
-/*const q_eqn_map = new Map();
-q_eqn_map.set("Fr95", fr95_q);
-q_eqn_map.set("We96", we96_q);
-q_eqn_map.set("Xu09", xu09_q);
-q_eqn_map.set("Ho14", ho14_q);
-q_eqn_map.set("Az15", az15_q);
-q_eqn_map.set("Fr16", fr16_q);
-q_eqn_map.set("Zh20", zh20_q);
-q_eqn_map.set("Ya25", ya25_q);*/
+export function convertDamInputToFailure(damInput: DamFailureInput): DamFailure {
 
-/*const t_eqn_map = new Map();
-t_eqn_map.set("Fr95", fr95_t);
-t_eqn_map.set("Fr08", fr08_t);
-t_eqn_map.set("Xu09", xu09_t);
-t_eqn_map.set("Zh20", zh20_t);*/
+  const heightOfWater = Number(damInput.heightOfWater?.replace(/,/g, ""));
+  const volumeOfWater = Number(damInput.volumeOfWater?.replace(/,/g, ""));
+  let depthOfBreach = Number(damInput.depthOfBreach?.replace(/,/g, ""));
+  let heightOfDam = Number(damInput.heightOfDam?.replace(/,/g, ""));
+  let averageWidth = Number(damInput.averageWidth?.replace(/,/g, ""));
+
+  if (!heightOfDam) {
+    heightOfDam = depthOfBreach ? depthOfBreach : heightOfWater;
+  }
+
+  if (!depthOfBreach) {
+    depthOfBreach = heightOfDam;
+  }
+
+  if (!averageWidth) {
+    averageWidth = heightOfDam * 2.6;
+  }
+
+  return {
+    heightOfWater: heightOfWater,
+    volumeOfWater: volumeOfWater,
+    heightOfDam: heightOfDam,
+    depthOfBreach: depthOfBreach,
+    averageWidth: averageWidth,
+    erodibility: damInput.erodibility,
+    mode: damInput.failureMode,
+    type: damInput.damType,
+  } as DamFailure;
+}

@@ -7,7 +7,7 @@ The goal of this project is to support engineers, researchers, and students by o
 
 ## Project Overview
 
-Dam breach modeling is a crucial component of risk assessment, emergency planning, and hydraulic analysis. Traditional empirical equations—while widely applied—often exhibit considerable prediction variability.
+Dam breach modeling is a crucial component of risk assessment, emergency planning, and hydraulic analysis. Traditional empirical equations often exhibit considerable prediction variability.
 This project addresses that limitation by:
 
 - Providing recalibrated equations based on the thesis research.

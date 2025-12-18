@@ -26,7 +26,7 @@ export default function DamSchematic({
     if (ctx) {
       const wMax = ctx.canvas.width;
       const hMax = ctx.canvas.height;
-      const verticalExaggeration = 1;
+      const verticalExaggeration = 2;
 
       // Calculate maximum unit sizes for the figure
       let hBUnitLimit =
@@ -114,7 +114,7 @@ export default function DamSchematic({
       ctx.font = "italic 16px serif";
       ctx.fillStyle = "#ff6900";
       ctx.textAlign = "right";
-      ctx.fillText("breach depth", wMax - 3, breachY - 4);
+      ctx.fillText("breach depth", wMax - 3, breachY + 20);
 
       // Water height
       ctx.setLineDash([]);

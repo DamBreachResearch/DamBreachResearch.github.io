@@ -39,7 +39,7 @@ function NumericalInput({
         </label>
         <input
           className={
-            "col-start-3 col-span-2 text-3xl font-serif rounded-xl bg-slate-700 " +
+            "col-start-3 col-span-2 text-2xl font-serif rounded-xl bg-slate-700 " +
             "[appearance:textfield] text-right pr-2 " +
             "invalid:border-b-2 invalid:border-orange-500 invalid:text-orange-600 " +
             "hover:bg-slate-600"
@@ -53,10 +53,10 @@ function NumericalInput({
           required={required}
           step="any"
         />
-        <div className="text-3xl font-serif text-left col-5">{units}</div>
+        <div className="text-2xl font-serif text-left col-5">{units}</div>
         <br />
         <div
-          className="italic text-s text-left inline-block align-text-bottom col-span-full
+          className="italic text-sm text-left inline-block align-text-bottom col-span-full
         border-b border-stone-300 border-dashed"
         >
           {description}

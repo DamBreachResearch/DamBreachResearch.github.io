@@ -1,3 +1,5 @@
+import { JSX } from "react";
+
 export function timeStringFormat(timeValueHours: number | string) {
   const timeValue = Number(timeValueHours);
   const hours = Math.floor(timeValue);

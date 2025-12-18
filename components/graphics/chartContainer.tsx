@@ -40,13 +40,15 @@ export default function ChartContainer({
   }, [height, width, damInput, selectedEquation, recalibrated]);
 
   return (
-    <ReactApexChart
-      options={chartOptions}
-      series={seriesInfo}
-      type="line"
-      width={width}
-      height={height}
-    />
+    <div className="min-h-0 max-w-1/1 mx-auto">
+      <ReactApexChart
+        options={chartOptions}
+        series={seriesInfo}
+        type="line"
+        width={width}
+        height={height}
+      />
+    </div>
   );
 }
 
@@ -97,7 +99,11 @@ function calculateAllSeries(
   const equationType = selectedEquation?.slice(-1); // Q or T or B
   for (let equationName in equationList) {
     if (equationName.slice(-1) === equationType) {
-      let equationResults = calculateSeries(damInput, equationName, recalibrated).equationResults;
+      let equationResults = calculateSeries(
+        damInput,
+        equationName,
+        recalibrated
+      ).equationResults;
       if (equationName === selectedEquation) {
         allEquationResults.unshift({
           name: selectedEquation,
@@ -119,12 +125,12 @@ function updateChartProperties(
   let seriesInfo = calculateSeries(damInput, equationName, recalibrated);
   let chartTitle = "Unknown";
   let units = "";
-  if (equationName.slice(-1) === 'Q') {
-    chartTitle = "Peak flow"
-    units = "m³/s"
-  } else if (equationName.slice(-1) === 'T') {
-    chartTitle = "Time to failure"
-    units = "h"
+  if (equationName.slice(-1) === "Q") {
+    chartTitle = "Peak flow";
+    units = "m³/s";
+  } else if (equationName.slice(-1) === "T") {
+    chartTitle = "Time to failure";
+    units = "h";
   }
   const options: ApexOptions = {
     chart: {
@@ -152,7 +158,10 @@ function updateChartProperties(
       align: "center",
       style: { color: "#ffffff", fontSize: "24px" },
     },
-    legend: {customLegendItems: [equationName, "Other"]},
+    legend: {
+      customLegendItems: [equationName, "Other"],
+      labels: { colors: ["#ffffff", "#ffffff"] },
+    },
     xaxis: {
       type: "numeric",
       axisBorder: { color: "#ffffff" },
@@ -187,8 +196,15 @@ function updateChartProperties(
             text:
               Number(
                 seriesInfo.predictionResult.toPrecision(2)
-              ).toLocaleString() + " " + units,
-            style: { fontSize: "14px" },
+              ).toLocaleString() +
+              " " +
+              units,
+            style: {
+              fontSize: "14px",
+              cssClass: "",
+              background: "#45556c",
+              color: "#ffffff",
+            },
           },
         },
       ],

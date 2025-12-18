@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { DamFailureInput, EquationState } from "./empiricalEqn";
+import { equationList } from "./eqnList";
 
 function SelectionInput({
   name,
@@ -31,17 +32,33 @@ function SelectionInput({
         id={name}
         name={name}
         className={
-          "text-center bg-slate-700 hover:bg-slate-600 rounded-xl pl-2 text-2xl"
+          "text-center bg-slate-700 hover:bg-slate-600 rounded-xl pl-2 text-lg"
         }
         value={value}
         onChange={(e) => onValueChange(e.target.value)}
       >
         {optionsJSX}
       </select>
-      <label htmlFor={name} className={"text-2xl w-1/4"}>
+      {/* <label htmlFor={name} className={"text-lg w-1/4"}>
         {" " + displayName}
-      </label>
+      </label> */}
     </>
+  );
+}
+
+function EquationDisplay({
+  equationName,
+  recalibrated,
+}: {
+  equationName: string;
+  recalibrated: boolean;
+}) {
+  return (
+    <span className="font-serif leading-8">
+      {recalibrated
+        ? equationList[equationName]?.reDisplayText
+        : equationList[equationName]?.displayText}
+    </span>
   );
 }
 
@@ -59,8 +76,8 @@ export function DamDescriptionContainer({
   setEquationState,
 }: DamDescriptionProperties) {
   return (
-    <div className="dam-description text-center">
-      <span className="text-2xl">For the </span>
+    <div className="dam-description text-center text-lg">
+      Failure mode:{" "}
       <SelectionInput
         name="failure"
         options={["overtopping", "piping"]}
@@ -70,7 +87,7 @@ export function DamDescriptionContainer({
         }
       />
       <br />
-      <span className="text-2xl"> of a </span>
+      Erodibility:{" "}
       <SelectionInput
         name="erodibility"
         options={["low", "medium", "high"]}
@@ -80,7 +97,7 @@ export function DamDescriptionContainer({
         }
       />
       <br />
-      <span className="text-2xl"> </span>
+      Structure type:{" "}
       <SelectionInput
         name="dam"
         options={["homogenous-fill", "core-wall"]}
@@ -89,10 +106,8 @@ export function DamDescriptionContainer({
           setDamFailure({ ...damFailure, damType: e })
         }
       />
-      <span className="text-2xl">, </span>
       <br />
-      <span className="text-2xl">calculate the peak flow using the </span>
-      <br />
+      Peak flow equation: <br />
       <SelectionInput
         name="recalibrated"
         suppressName={true}
@@ -120,8 +135,12 @@ export function DamDescriptionContainer({
         }
       />
       <br />
-      <span className="text-2xl"> and the time to failure using the </span>
+      <EquationDisplay
+        equationName={equationState.peakFlowEquationName + "-Q"}
+        recalibrated={equationState.peakFlowEquationType === "recalibrated"}
+      />
       <br />
+      Time to failure equation: <br />
       <SelectionInput
         name="recalibrated"
         suppressName={true}
@@ -144,7 +163,12 @@ export function DamDescriptionContainer({
           setEquationState({ ...equationState, timeToFailureEquationName: e })
         }
       />
-      <span className="text-2xl">:</span>
+      <br />
+
+      <EquationDisplay
+        equationName={equationState.timeToFailureEquationName + "-T"}
+        recalibrated={equationState.timeToFailureEquationType === "recalibrated"}
+      />
     </div>
   );
 }
